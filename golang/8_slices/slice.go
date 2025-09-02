@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"slices"
+)
 
 // slices -> dynamic array
 // most used contruct in go
@@ -31,4 +34,32 @@ func main(){
 
 	numbers = append(numbers, 4)
 	fmt.Println(numbers)
+
+
+	// copy func to copy array
+
+	numbers[0]=12
+
+	var copy_arr[]int
+	copy(numbers,copy_arr)
+
+	fmt.Println(copy_arr,numbers)
+
+
+	//  slice operator
+
+
+	var slice_nums=[]int{1,2,3}
+
+	fmt.Println(slice_nums[0:1])  // start point to end point except end index
+	fmt.Println(slice_nums[:2]) 
+	fmt.Println(slice_nums[1:]) 
+
+
+	// slice in-built package
+
+	var nums1=[]int{1,2}
+	var nums2=[]int{1,2}
+
+	fmt.Println(slices.Equal(nums1,nums2)) // compare and return boolean
 }

@@ -3,6 +3,8 @@
 using namespace std;
 
 
+
+//  use two pointer approach 
 vector<int> removeDuplicates(vector<int> nums){
 
     int i = 0;

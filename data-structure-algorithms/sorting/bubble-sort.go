@@ -8,12 +8,18 @@ import (
 
 func BubbleSort(arr []int) {
 
-	for i, item := range arr {
+	for i, _ := range arr {
 
-		for j := i + 1; j < len(arr); j++ {
-			if item > arr[j] {
-				arr[i], arr[j] = arr[j], arr[i]
+		swapped := false
+
+		for j := i + 1; j < len(arr)-i-1; j++ {
+			if arr[j] > arr[j+1] {
+				arr[i], arr[j+1] = arr[j+1], arr[i]
+				swapped = true
 			}
+		}
+		if !swapped {
+			return
 		}
 	}
 

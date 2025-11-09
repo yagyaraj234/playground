@@ -9,7 +9,8 @@ import {
 import { ProductListSkeleton } from "@/components/product-skeleton";
 import Image from "next/image";
 import { Suspense } from "react";
-import { cacheLife } from "next/cache";
+import { productCategories } from "@/api/data";
+import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 
 // Star rating component
 function StarRating({ rating }: { rating: number }) {
@@ -63,18 +64,21 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 // Products display component
-async function ProductsDisplay() {
+async function ProductsList({ type }: { type: string }) {
   try {
-    const products = await getProducts();
+    const products = await getProducts(type);
 
     return (
       <div className="w-full max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h2 className="text-3xl font-bold tracking-tight mb-2">
-            Our Products
+            {productCategories[type as keyof typeof productCategories].name}
           </h2>
           <p className="text-muted-foreground text-lg">
-            Discover our curated collection of premium products
+            {
+              productCategories[type as keyof typeof productCategories]
+                .description
+            }
           </p>
         </div>
 
@@ -82,7 +86,7 @@ async function ProductsDisplay() {
           {products.map((product: any) => (
             <Card
               key={product.id}
-              className="group overflow-hidden border-0 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white dark:bg-gray-900"
+              className="group overflow-hidden border-0 py-0 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-white dark:bg-gray-900"
             >
               <CardHeader className="p-0">
                 <div className="aspect-4/3 relative overflow-hidden bg-gray-100 dark:bg-gray-800">
@@ -90,6 +94,8 @@ async function ProductsDisplay() {
                     src={product.image}
                     alt={product.title}
                     fill
+                    priority
+                    unoptimized
                     className="object-cover object-center transition-transform duration-300 group-hover:scale-105"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                   />
@@ -160,10 +166,30 @@ async function ProductsDisplay() {
   }
 }
 
-export default function ProductCart() {
+("use cache");
+cacheTag("product-cart");
+cacheLife("hours");
+export default function ProductCart({ type = "clothing" }: { type: string }) {
   return (
     <Suspense fallback={<ProductListSkeleton />}>
-      <ProductsDisplay />
+      <ProductsList type={type} />
     </Suspense>
   );
 }
+
+// export function AddNewProduct({ product }: { product: any }) {
+//   'use server';
+//   async function handleAddToCart() {
+//     await addNewProduct(product);
+//     revalidateTag("skin-care-products");
+//   }
+
+//   return (
+//     <button
+//       onClick={handleAddToCart}
+//       className="bg-blue-500 text-white px-4 py-2 rounded-md"
+//     >
+//       Add to Cart
+//     </button>
+//   );
+// }

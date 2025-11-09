@@ -6,7 +6,9 @@ interface ProductSkeletonProps {
 
 export function ProductSkeleton({ className }: ProductSkeletonProps) {
   return (
-    <Card className={`overflow-hidden border-0 shadow-sm bg-white dark:bg-gray-900 animate-pulse ${className}`}>
+    <Card
+      className={`overflow-hidden border-0 py-0 shadow-sm bg-white dark:bg-gray-900 animate-pulse w-full ${className}`}
+    >
       {/* Product Image Skeleton */}
       <div className="aspect-4/3 relative overflow-hidden bg-gray-100 dark:bg-gray-800">
         <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700" />
@@ -34,7 +36,10 @@ export function ProductSkeleton({ className }: ProductSkeletonProps) {
         <div className="flex items-center gap-1">
           <div className="flex gap-1">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="w-3 h-3 bg-gray-200 dark:bg-gray-700 rounded" />
+              <div
+                key={i}
+                className="w-3 h-3 bg-gray-200 dark:bg-gray-700 rounded"
+              />
             ))}
           </div>
           <div className="h-3 w-6 bg-gray-200 dark:bg-gray-700 rounded ml-1" />
@@ -61,9 +66,14 @@ interface ProductGridSkeletonProps {
   className?: string;
 }
 
-export function ProductGridSkeleton({ count = 8, className }: ProductGridSkeletonProps) {
+export function ProductGridSkeleton({
+  count = 4,
+  className,
+}: ProductGridSkeletonProps) {
   return (
-    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 ${className}`}>
+    <div
+      className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full ${className}`}
+    >
       {Array.from({ length: count }).map((_, i) => (
         <ProductSkeleton key={i} />
       ))}

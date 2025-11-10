@@ -166,9 +166,6 @@ async function ProductsList({ type }: { type: string }) {
   }
 }
 
-("use cache");
-cacheTag("product-cart");
-cacheLife("hours");
 export default function ProductCart({ type = "clothing" }: { type: string }) {
   return (
     <Suspense fallback={<ProductListSkeleton />}>

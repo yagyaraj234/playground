@@ -24,4 +24,16 @@ export function registerReportCron() {
       console.error("report cron failed", error);
     }
   });
+      const response = await fetch("https://chat.yagyaraj.com/api/room/create", {
+        headers: {
+          accept: "*/*",
+          "content-type": "application/json",
+        },
+        body: '{"username":"anon-lion-gxn"}',
+        method: "POST",
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 }

@@ -1,7 +1,8 @@
 import cron from "node-cron";
 
 export async function registerReportCron() {
-  cron.schedule("0 */20 * * * *", async () => {
+  console.log("job scheduled");
+  cron.schedule("0 */1 * * * *", async () => {
     try {
       const response = await fetch(
         "https://chat.yagyaraj.com/api/room/create",
@@ -15,9 +16,13 @@ export async function registerReportCron() {
         }
       );
       if (!response.ok) {
+        console.log("response not ok");
         throw new Error(`HTTP error! status: ${response.status}`);
+      } else {
+        console.log("response ok");
       }
     } catch (error) {
+      console.log("error",error);
       console.error(error);
     }
   });

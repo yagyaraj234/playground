@@ -17,6 +17,7 @@
       "devDependencies": {
         "@tailwindcss/postcss": "^4",
         "@types/node": "^25",
+        "@types/node-cron": "^3.0.11",
         "@types/react": "^19",
         "@types/react-dom": "^19",
         "eslint": "^9",
@@ -223,6 +224,8 @@
     "@types/json5": ["@types/json5@0.0.29", "https://repository.wavemaker.com/repository/wavemaker-npm-repo/@types/json5/-/json5-0.0.29.tgz", {}, "sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ=="],
 
     "@types/node": ["@types/node@25.0.3", "https://repository.wavemaker.com/repository/wavemaker-npm-repo/@types/node/-/node-25.0.3.tgz", { "dependencies": { "undici-types": "~7.16.0" } }, "sha512-W609buLVRVmeW693xKfzHeIV6nJGGz98uCPfeXI1ELMLXVeKYZ9m15fAMSaUPBHYLGFsVRcMmSCksQOrZV9BYA=="],
+
+    "@types/node-cron": ["@types/node-cron@3.0.11", "https://repository.wavemaker.com/repository/wavemaker-npm-repo/@types/node-cron/-/node-cron-3.0.11.tgz", {}, "sha512-0ikrnug3/IyneSHqCBeslAhlK2aBfYek1fGo4bP4QnZPmiqSGRK+Oy7ZMisLWkesffJvQ1cqAcBnJC+8+nxIAg=="],
 
     "@types/react": ["@types/react@19.2.2", "https://repository.wavemaker.com/repository/wavemaker-npm-repo/@types/react/-/react-19.2.2.tgz", { "dependencies": { "csstype": "^3.0.2" } }, "sha512-6mDvHUFSjyT2B2yeNx2nUgMxh9LtOWvkhIU3uePn2I2oyNymUAX1NIsdgviM4CH+JSrp2D2hsMvJOkxY+0wNRA=="],
 

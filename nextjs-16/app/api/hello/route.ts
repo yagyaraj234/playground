@@ -16,9 +16,6 @@ export function GET(request: Request) {
       "sec-fetch-dest": "empty",
       "sec-fetch-mode": "cors",
       "sec-fetch-site": "same-origin",
-      cookie:
-        "AMP_MKTG_fe4beb374f=JTdCJTIycmVmZXJyZXIlMjIlM0ElMjJodHRwcyUzQSUyRiUyRnZlcmNlbC5jb20lMkYlMjIlMkMlMjJyZWZlcnJpbmdfZG9tYWluJTIyJTNBJTIydmVyY2VsLmNvbSUyMiU3RA==; x-auth-token=d-dMf0zNlyQ3n8foUtokO; __vercel_toolbar=1; AMP_fe4beb374f=JTdCJTIyZGV2aWNlSWQlMjIlM0ElMjJiNGU4MTA0Zi1jMzdkLTQwNjQtOWVjZC0zYTdkZGE0NzlmNTklMjIlMkMlMjJ1c2VySWQlMjIlM0ElMjIwMWM0MDE1ZC1hMzgyLTRlNzktYmU1ZC1lZTUyNGMwNWUyODQlMjIlMkMlMjJzZXNzaW9uSWQlMjIlM0ExNzY3MzM2OTcwNDM3JTJDJTIyb3B0T3V0JTIyJTNBZmFsc2UlMkMlMjJsYXN0RXZlbnRUaW1lJTIyJTNBMTc2NzMzNjk3MDQ0MCUyQyUyMmxhc3RFdmVudElkJTIyJTNBMiU3RA==",
-      Referer: "https://chat.yagyaraj.com/",
     },
     body: '{"username":"anon-lion-gxn"}',
     method: "POST",

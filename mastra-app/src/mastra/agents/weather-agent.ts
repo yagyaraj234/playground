@@ -3,7 +3,7 @@ import { Memory } from "@mastra/memory";
 import { weatherTool } from "../tools/weather-tool";
 import { scorers } from "../scorers/weather-scorer";
 import { weatherWorkflow } from "../workflows/weather-workflow";
-
+import blogWorkflow from "../workflows/blog-workflow";
 export const weatherAgent = new Agent({
   id: "weather-agent",
   name: "Weather Agent",
@@ -25,6 +25,7 @@ export const weatherAgent = new Agent({
   tools: { weatherTool },
   workflows: {
     weatherWorkflow,
+    blogWorkflow,
   },
   scorers: {
     toolCallAppropriateness: {

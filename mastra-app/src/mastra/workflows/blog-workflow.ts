@@ -32,10 +32,10 @@ const researchStep = createStep({
   },
 });
 
-const structureStep = createStep({
-  id: "structure-step",
-  description: "define a blog structure sections",
-});
+// const structureStep = createStep({
+//   id: "structure-step",
+//   description: "define a blog structure sections",
+// });
 
 const blogWorkflow = createWorkflow({
   id: "blog-workflow",
@@ -59,6 +59,8 @@ const blogWorkflow = createWorkflow({
   outputSchema: z.object({
     blog: z.string(),
   }),
-}).then(researchStep);
+})
+  .then(researchStep)
+  .commit();
 
 export default blogWorkflow;

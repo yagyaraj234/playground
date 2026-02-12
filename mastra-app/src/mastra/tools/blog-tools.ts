@@ -2,7 +2,7 @@ import { z } from "zod";
 import Firecrawl from "@mendable/firecrawl-js";
 import { researchSchemaOutput } from "../workflows/blog-workflow";
 const firecrawl = new Firecrawl({ apiKey: process.env.FIRECRAWL_API_KEY });
-
+import { BLOG_AGENT } from "../agent-config";
 const researchSchema = z.object({
   topic: z.string().describe("The topic to research"),
 });
@@ -28,16 +28,28 @@ const scrapeWebsiteTool = async (inputData: ScrapeWebsiteInput) => {
 //   is_researched: z.boolean(),
 //   is_saturated: z.boolean(),
 
+
+
+export const 
+
 export const searchWeb = async ({
   topic,
 }: {
   topic: string;
 }): Promise<z.infer<typeof researchSchemaOutput>> => {
   const response = await firecrawl.search(topic, {
-    limit: 3,
+    limit: parseInt(BLOG_AGENT.search_limit),
     scrapeOptions: { formats: ["markdown"] },
   });
-  console.log(response);
+
+  if (!response.web) {
+    searchWeb({ topic });
+  }
+
+
+  const topPages=[]
+
+  debugger;
   const result = {
     gap_questions: ["fdsjknfd"],
     copetitors_keywords: ["fsdjkfd"],

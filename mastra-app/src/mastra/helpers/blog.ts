@@ -5,7 +5,7 @@ import { generateText, Output } from "ai";
 
 import { firecrawlClient } from "../lib/firecrawl";
 import { SearchWebResponse } from "./types";
-import { pageStructureSchema } from "./schema";
+import { pageStructureSchema, questionMiningSchema } from "./schema";
 
 export async function searchWeb(
   topic: string,
@@ -14,7 +14,6 @@ export async function searchWeb(
   const results = await firecrawlClient.search(topic, {
     limit,
   });
-  console.log("results", results);
 
   return results.web ?? [];
 }
@@ -77,7 +76,7 @@ async function calculateSaturationScore(pages: any) {
 }
 
 async function performSERPAnalysis(topic: string) {
-  const searchResults = await performSERPAnalysis(topic);
+  const searchResults = await searchWeb(topic, 1);
 
   const itemsLen = searchResults.length;
 
@@ -98,6 +97,7 @@ async function performSERPAnalysis(topic: string) {
         result.title,
         content,
       );
+      //   console.log("page--->", resu÷lt.url, content);
       topPages.push(page);
     } catch (error) {
       console.warn(
@@ -125,7 +125,7 @@ async function extractPageStructure(
   content: string,
 ) {
   const { output } = await generateText({
-    model: google("gemini-3-pro-image"),
+    model: google("gemini-2.5-flash"),
     output: Output.object({
       schema: pageStructureSchema,
     }),
@@ -158,9 +158,110 @@ async function extractPageStructure(
   };
 }
 
-async function research(topic: string) {
+async function performGapDetection(serpAnalysis: any, topic: string) {
+  // Prepare page summaries for analysis
+  const pageSummaries = serpAnalysis.topPages
+    .map(
+      (page: any) =>
+        `URL: ${page.url}
+        Title: ${page.title}
+        H1: ${page.h1}
+        H2s: ${page.h2s.join(", ")}
+        Key Points: ${page.keyPoints.join(", ")}`,
+    )
+    .join("\n\n");
+
+  const { output } = await generateText({
+    model: google("gemini-2.5-flash"),
+    output: Output.object({
+      schema: pageStructureSchema,
+    }),
+    prompt: `Analyze these competitor pages for the topic "${topic}" and identify gaps.
+        ${pageSummaries}
+        Identify:
+        1. What all competitors say (common themes)
+        2. What is repeated across pages
+        3. What is missing or barely mentioned
+        4. What is covered but only superficially
+
+        For each category, provide 3-5 specific items.`,
+  });
+
+  return output;
+}
+
+async function performQuestionMining(serpAnalysis: any, topic: string) {
+  // Extract confusion points from page titles and key points
+  const confusionPoints = serpAnalysis.topPages
+    .flatMap((page: any) => [
+      ...page.keyPoints,
+      page.title,
+      page.h1,
+      ...page.h2s.slice(0, 3),
+    ])
+    .filter((point) => point.length > 0)
+    .slice(0, 20);
+
+  const { output } = await generateText({
+    model: google("gemini-2.5-flash"),
+    output: Output.object({
+      schema: questionMiningSchema,
+    }),
+    prompt: `Generate questions users ask about "${topic}" for audience level "intermediate".
+
+    Based on these content points:
+    ${confusionPoints.join("\n")}
+
+    Generate:
+    1. 3-4 beginner questions (what is it, how do I start, etc.)
+    2. 3-4 "why does this break" questions (common failures, errors)
+    3. 3-4 "when NOT to use" questions (limitations, alternatives)
+    4. 3-4 real-world confusion points (extracted from the content analysis)
+
+    Make questions specific and practical.`,
+  });
+
+  return output;
+}
+
+export async function research(topic: string) {
   try {
-    // perform SERP analysis
+    //  perform SERP analysis
     const serpResults = await performSERPAnalysis(topic);
-  } catch (error) {}
+
+    //    perform gap detection
+    const gapAnalysis = await performGapDetection(serpResults, topic);
+
+    // Perform question mining
+    const questionMining = await performQuestionMining(serpResults, topic);
+
+    // Collect warnings
+    const warnings: string[] = [];
+    if (serpResults.saturationScore > 80) {
+      warnings.push(
+        `Topic is highly saturated (${serpResults.saturationScore}% overlap). Consider a unique angle.`,
+      );
+    }
+
+    console.log("------Research-----", {
+      topic,
+      serpResults,
+      gapAnalysis,
+      questionMining,
+      warnings,
+    });
+
+    return {
+      topic,
+      serpResults,
+      gapAnalysis,
+      questionMining,
+      warnings,
+    };
+  } catch (error) {
+    throw {
+      type: "ResearchError",
+      message: `Failed to perform research for topic "${topic}": ${error instanceof Error ? error.message : "Unknown error"}`,
+    };
+  }
 }

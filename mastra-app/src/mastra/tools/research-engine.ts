@@ -1,5 +1,5 @@
 import { BLOG_AGENT } from "../agent-config";
-import { firecrawl } from "../lib/firecrawl";
+import { firecrawlClient } from "../lib/firecrawl";
 
 export class ResearchEngine {
   static async performResearch(topic: string) {
@@ -9,7 +9,7 @@ export class ResearchEngine {
   }
 
   public static async searchWeb(topic: string, limit: number) {
-    const results = await firecrawl.search(topic, {
+    const results = await firecrawlClient.search(topic, {
       limit,
     });
 
@@ -29,7 +29,7 @@ export class ResearchEngine {
       try {
         const result = searchResults[i];
         if (!result.url) return;
-        const content = await firecrawl.scrape(result.url, {
+        const content = await firecrawlClient.scrape(result.url, {
           scrapeOptions: { formats: ["markdown"] },
           timeout: 30000,
         });

@@ -28,10 +28,6 @@ const scrapeWebsiteTool = async (inputData: ScrapeWebsiteInput) => {
 //   is_researched: z.boolean(),
 //   is_saturated: z.boolean(),
 
-
-
-export const 
-
 export const searchWeb = async ({
   topic,
 }: {
@@ -46,8 +42,7 @@ export const searchWeb = async ({
     searchWeb({ topic });
   }
 
-
-  const topPages=[]
+  const topPages = [];
 
   debugger;
   const result = {

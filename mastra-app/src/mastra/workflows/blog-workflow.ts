@@ -32,24 +32,25 @@ const researchStep = createStep({
   },
 });
 
-// const structureStep = createStep({
-//   id: "structure-step",
-//   description: "define a blog structure sections",
-// });
-
 const blogWorkflow = createWorkflow({
   id: "blog-workflow",
   inputSchema: z.object({
-    topic: z.string().min(40).describe("The topic to research"),
+    topic: z.string().min(20).describe("The topic to research"),
     audience: z
       .enum(["beginner", "intermediate", "expert"])
-      .describe("The audience for the blog"),
+      .describe("The audience for the blog")
+      .default("beginner")
+      .optional(),
     length: z
       .enum(["short", "medium", "long"])
-      .describe("The length of the blog"),
+      .describe("The length of the blog")
+      .default("medium")
+      .optional(),
     tone: z
       .enum(["formal", "informal", "technical"])
-      .describe("The tone of the blog"),
+      .describe("The tone of the blog")
+      .default("technical")
+      .optional(),
 
     refrence_urls: z
       .array(z.string())

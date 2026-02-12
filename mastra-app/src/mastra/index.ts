@@ -16,7 +16,7 @@ import {
 } from "./scorers/weather-scorer";
 import { blogAgent } from "./agents/blog-agent";
 import blogWorkflow from "./workflows/blog-workflow";
-import { searchWeb } from "./helpers/blog";
+import { research, searchWeb } from "./helpers/blog";
 
 export const mastra = new Mastra({
   workflows: { weatherWorkflow, blogWorkflow },
@@ -52,3 +52,4 @@ export const mastra = new Mastra({
 });
 
 // searchWeb("Exploring JavaScript Proxies", 3);
+await research("Exploring javacript proxy in depth");

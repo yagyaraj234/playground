@@ -224,7 +224,7 @@ async function performQuestionMining(serpAnalysis: any, topic: string) {
   return output;
 }
 
-export async function research(topic: string) {
+export async function research(topic: string): Promise<any> {
   try {
     //  perform SERP analysis
     const serpResults = await performSERPAnalysis(topic);

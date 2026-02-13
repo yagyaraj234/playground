@@ -52,4 +52,4 @@ export const mastra = new Mastra({
 });
 
 // searchWeb("Exploring JavaScript Proxies", 3);
-await research("Exploring javacript proxy in depth");
+// await research("Exploring javacript proxy in depth");

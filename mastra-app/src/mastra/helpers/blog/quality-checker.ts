@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { Output, generateText } from "ai";
-import { google } from "@ai-sdk/google";
+import { Output } from "ai";
+import { generateObjectResult, getGeminiModel } from "../../lib/model.util";
 
 import type {
   QualityCheckResult,
@@ -9,36 +9,7 @@ import type {
   ResearchData,
   UserInput,
 } from "../../types/blog";
-import { CURRENT_MODEL } from "../../lib/model-config";
 
-interface GenerateObjectParams {
-  model?: string;
-  schema: any;
-  prompt: string;
-}
-
-async function generateObjectResult({
-  model,
-  schema = Output.object({
-    schema: z.object({
-      name: z.string(),
-      description: z.string(),
-    }),
-  }),
-  prompt = "",
-}: GenerateObjectParams): Promise<any> {
-  const { output } = await generateText({
-    model: model ?? google(CURRENT_MODEL),
-    output: schema,
-    prompt,
-  });
-
-  return output;
-}
-
-async function getGeminiModel() {
-  return google(CURRENT_MODEL);
-}
 export class QualityChecker {
   /**
    * Checks quality of a generated section

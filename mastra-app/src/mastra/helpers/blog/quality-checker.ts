@@ -8,8 +8,8 @@ import type {
   GeneratedSection,
   ResearchData,
   UserInput,
-} from "src/mastra/types/blog";
-import { CURRENT_MODEL } from "src/mastra/lib/model-config";
+} from "../../types/blog";
+import { CURRENT_MODEL } from "../../lib/model-config";
 
 interface GenerateObjectParams {
   model?: string;
@@ -238,7 +238,7 @@ Flag as problematic if:
    */
   private async checkClarity(
     section: GeneratedSection,
-    validatedInput: ValidatedInput,
+    validatedInput: UserInput,
   ): Promise<QualityCheck> {
     const model = await getGeminiModel();
 
@@ -268,7 +268,7 @@ Flag as problematic if:
       schema,
       prompt: `Assess the clarity of this blog section for the target audience.
 
-Target Audience: ${validatedInput.audience} (${audienceDescriptions[validatedInput.audience]})
+Target Audience: ${validatedInput.audience} (${audienceDescriptions[UserInput.audience]})
 
 Section Title: ${section.title}
 Section Content:
@@ -364,7 +364,7 @@ Be thorough: hallucinations damage credibility.`,
     const hallucinationsStr =
       result.object.hallucinations.length > 0
         ? result.object.hallucinations
-            .map((h) => `"${h.claim}" - ${h.issue}`)
+            .map((h: any) => `"${h.claim}" - ${h.issue}`)
             .join("; ")
         : "None detected";
 

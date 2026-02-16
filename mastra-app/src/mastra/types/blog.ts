@@ -74,7 +74,7 @@ export const researchSchemaOutput = z.object({
 });
 
 // Outline Generator types
-export const OutlineSection = z.object({
+const OutlineSection = z.object({
   level: z.union([z.literal(1), z.literal(2)]),
   title: z.string(),
   description: z.string(),
@@ -82,14 +82,14 @@ export const OutlineSection = z.object({
   shouldIncludeExample: z.boolean().optional(),
 });
 
-export const MandatorySections = z.object({
+const MandatorySections = z.object({
   howItWorks: z.boolean(),
   commonMistakes: z.boolean(),
   whenNotToUse: z.boolean(),
   realWorldExample: z.boolean(),
 });
 
-export const BlogOutlineStepOutputSchema = z.object({
+const BlogOutlineStepOutputSchema = z.object({
   h1: z.string(),
   sections: z.array(OutlineSection),
   internalLinkSuggestions: z.array(z.string()),
@@ -97,7 +97,7 @@ export const BlogOutlineStepOutputSchema = z.object({
   mandatorySections: MandatorySections,
 });
 
-export const generateOutlineInputSchema = z.object({
+const generateOutlineInputSchema = z.object({
   reserchData: researchSchemaOutput,
   userInput: userInputSchema,
 });
@@ -229,6 +229,7 @@ export const BlogGenerationResult = z.object({
 // ============================================================================
 export type userInputType = z.infer<typeof userInputSchema>;
 export type BlogOutlineType = z.infer<typeof BlogOutlineStepOutputSchema>;
+export type OutlineSection = z.infer<typeof OutlineSection>;
 export type BlogContentType = z.infer<typeof BlogContent>;
 export type researchDataType = z.infer<typeof researchSchemaOutput>;
 export type QualityCheckType = z.infer<typeof QualityCheckOutputSchema>;
@@ -242,3 +243,4 @@ export type SERPPageType = z.infer<typeof SERPPage>;
 export type SERPAnalysisType = z.infer<typeof SERPAnalysis>;
 export type GapAnalysisType = z.infer<typeof GapAnalysis>;
 export type QuestionMiningType = z.infer<typeof QuestionMining>;
+export type MandatorySections = z.infer<typeof MandatorySections>;

@@ -1,7 +1,7 @@
 import { generateText } from "ai";
 import { google } from "@ai-sdk/google";
 
-import { CURRENT_MODEL } from "src/mastra/lib/model-config";
+import { CURRENT_MODEL } from "../../lib/model-config";
 
 import {
   BlogContentType as BlogContent,
@@ -9,7 +9,7 @@ import {
   BlogOutlineType as BlogOutline,
   researchDataType as ResearchData,
   userInputType as ValidatedInput,
-} from "src/mastra/types/blog";
+} from "../../types/blog";
 
 export class ContentGenerator {
   /**

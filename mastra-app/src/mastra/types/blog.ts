@@ -25,6 +25,45 @@ export const userInputSchema = z.object({
     .optional(),
 });
 
+// research data
+export const SERPPage = z.object({
+  url: z.string(),
+  title: z.string(),
+  h1: z.string(),
+  h2s: z.array(z.string()),
+  h3s: z.array(z.string()),
+  wordCount: z.number(),
+  angle: z.enum(["tutorial", "opinion", "documentation", "comparison"]),
+  keyPoints: z.array(z.string()),
+});
+
+export const SERPAnalysis = z.object({
+  topPages: z.array(SERPPage),
+  saturationScore: z.number(), // 0-100, >80 = saturated
+});
+
+export const GapAnalysis = z.object({
+  whatCompetitorsSay: z.array(z.string()),
+  whatIsRepeated: z.array(z.string()),
+  whatIsMissing: z.array(z.string()),
+  whatIsShallow: z.array(z.string()),
+});
+
+export const QuestionMining = z.object({
+  beginnerQuestions: z.array(z.string()),
+  whyDoesThisBreak: z.array(z.string()),
+  whenNotToUse: z.array(z.string()),
+  realWorldConfusion: z.array(z.string()),
+});
+
+const ResearchData = z.object({
+  topic: z.string(),
+  serpAnalysis: SERPAnalysis,
+  gapAnalysis: GapAnalysis,
+  questionMining: QuestionMining,
+  warnings: z.array(z.string()),
+});
+
 // research step schena
 export const researchSchemaOutput = z.object({
   gap_questions: z.array(z.string()),
@@ -197,5 +236,9 @@ export type generatedSectionType = z.infer<typeof GeneratedSection>;
 export type GeneratedSection = z.infer<typeof GeneratedSection>;
 export type QualityCheckResult = z.infer<typeof QualityCheckOutputSchema>;
 export type QualityCheck = z.infer<typeof QualityCheck>;
-export type ResearchData = z.infer<typeof researchSchemaOutput>;
+export type ResearchData = z.infer<typeof ResearchData>;
 export type UserInput = z.infer<typeof userInputSchema>;
+export type SERPPageType = z.infer<typeof SERPPage>;
+export type SERPAnalysisType = z.infer<typeof SERPAnalysis>;
+export type GapAnalysisType = z.infer<typeof GapAnalysis>;
+export type QuestionMiningType = z.infer<typeof QuestionMining>;

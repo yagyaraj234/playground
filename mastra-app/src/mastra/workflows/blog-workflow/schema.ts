@@ -1,5 +1,30 @@
 import { z } from "zod";
 
+// userInputSchema
+export const userInputSchema = z.object({
+  topic: z.string().min(20).describe("The topic to research"),
+  audience: z
+    .enum(["beginner", "intermediate", "expert"])
+    .describe("The audience for the blog")
+    .default("beginner")
+    .optional(),
+  length: z
+    .enum(["short", "medium", "long"])
+    .describe("The length of the blog")
+    .default("medium")
+    .optional(),
+  tone: z
+    .enum(["formal", "informal", "technical"])
+    .describe("The tone of the blog")
+    .default("technical")
+    .optional(),
+
+  refrence_urls: z
+    .array(z.string())
+    .describe("The reference urls for the blog")
+    .optional(),
+});
+
 // research step schena
 export const researchSchemaOutput = z.object({
   gap_questions: z.array(z.string()),
@@ -10,7 +35,6 @@ export const researchSchemaOutput = z.object({
 });
 
 // Outline Generator types
-
 export const OutlineSection = z.object({
   level: z.union([z.literal(1), z.literal(2)]),
   title: z.string(),
@@ -34,16 +58,22 @@ export const BlogOutlineStepOutputSchema = z.object({
   mandatorySections: MandatorySections,
 });
 
+export const generateOutlineInputSchema = z.object({
+  reserchData: researchSchemaOutput,
+  userInput: userInputSchema,
+});
+
 // content generation
 
-export const GeneratedSection = z.object({
-  level: 1 | 2 | 3, // H1, H2, H3
+const GeneratedSection = z.object({
+  level: z.union([z.literal(1), z.literal(2), z.literal(3)]),
   title: z.string(),
   content: z.string(),
   wordCount: z.number(),
   tokensUsed: z.number(),
   generationTime: z.number(),
 });
+
 export const BlogContent = z.object({
   sections: z.array(GeneratedSection),
   totalWordCount: z.number(),
@@ -51,17 +81,23 @@ export const BlogContent = z.object({
   totalGenerationTime: z.number(),
 });
 
+export const BlogContentInputSchema = z.object({
+  outline: BlogOutlineStepOutputSchema,
+  researchData: researchSchemaOutput,
+  userInput: userInputSchema,
+});
+
 // ============================================================================
 // Quality Checker Types
 // ============================================================================
 
-export const QualityCheck = z.object({
+const QualityCheck = z.object({
   score: z.number(),
   passed: z.boolean(),
   details: z.string(),
 });
 
-const QualityCheckSchema = z.object({
+export const QualityCheckOutputSchema = z.object({
   section: GeneratedSection,
   checks: z.object({
     similarity: QualityCheck,
@@ -152,13 +188,8 @@ export const BlogGenerationResult = z.object({
 // ============================================================================
 // Type Exports (for TypeScript inference)
 // ============================================================================
-
-export type InternalLinkType = z.infer<typeof InternalLink>;
-export type FAQItemType = z.infer<typeof FAQItem>;
-export type ArticleSchemaType = z.infer<typeof ArticleSchema>;
-export type SEOMetadataType = z.infer<typeof SEOMetadata>;
-export type BonusOutputsType = z.infer<typeof BonusOutputs>;
-export type SectionsCopyableType = z.infer<typeof SectionsCopyable>;
-export type BlogOutputType = z.infer<typeof BlogOutput>;
-export type GenerationLogType = z.infer<typeof GenerationLog>;
-export type BlogGenerationResultType = z.infer<typeof BlogGenerationResult>;
+export type userInputType = z.infer<typeof userInputSchema>;
+export type BlogOutlineType = z.infer<typeof BlogOutlineStepOutputSchema>;
+export type BlogContentType = z.infer<typeof BlogContent>;
+export type researchDataType = z.infer<typeof researchSchemaOutput>;
+export type QualityCheckType = z.infer<typeof QualityCheckOutputSchema>;

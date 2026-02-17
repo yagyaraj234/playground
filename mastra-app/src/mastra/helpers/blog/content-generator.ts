@@ -7,9 +7,27 @@ import {
   BlogContentType as BlogContent,
   generatedSectionType as GeneratedSection,
   BlogOutlineType as BlogOutline,
-  researchDataType as ResearchData,
   userInputType as ValidatedInput,
+  QualityCheckType,
+  QualityCheckResult,
 } from "../../types/blog";
+import type { ResearchData } from "../../types/blog";
+import { QualityChecker } from "./quality-checker";
+
+async function buildRegenerationPrompt(
+  section: any,
+  qualityCheckResult: QualityCheckResult,
+): Promise<string> {
+  return `Regenerate this section to fix the following issues:
+
+Section: ${section.title}
+Current content: ${section.content.substring(0, 500)}...
+
+Issues to fix:
+${qualityCheckResult.regenerationReason}
+
+Regenerate the section addressing these issues.`;
+}
 
 export class ContentGenerator {
   /**
@@ -359,5 +377,97 @@ Write the conclusion now:`;
    */
   private countWords(text: string): number {
     return text.trim().split(/\s+/).length;
+  }
+}
+
+export async function phaseGenerateContent(
+  outline: BlogOutline,
+  researchData: ResearchData,
+  userInput: ValidatedInput,
+): Promise<BlogContent> {
+  const phaseStartTime = Date.now();
+  let totalTokensUsed = 0;
+  let regenerationCount = 0;
+
+  try {
+    const contentGenerator = new ContentGenerator();
+    const qualityChecker = new QualityChecker();
+
+    // Generate initial content
+    let blogContent = await contentGenerator.generateContent(
+      outline,
+      researchData,
+      userInput,
+    );
+
+    totalTokensUsed += blogContent.totalTokensUsed;
+
+    // Check quality of each section and regenerate if needed
+    const checkedSections = [];
+
+    for (const section of blogContent.sections) {
+      let currentSection = section;
+      let attempts = 0;
+      let qualityCheckResult: QualityCheckType | null = null;
+
+      // Try up to 3 times to get a section that passes quality checks
+      while (attempts < 3) {
+        qualityCheckResult = await qualityChecker.checkQuality(
+          currentSection,
+          researchData,
+          userInput,
+        );
+
+        if (qualityCheckResult?.overallPassed) {
+          break;
+        }
+
+        // Regenerate the section
+        attempts++;
+        regenerationCount++;
+
+        if (attempts < 3) {
+          const regenerationPrompt = await buildRegenerationPrompt(
+            currentSection,
+            qualityCheckResult,
+          );
+
+          // Regenerate using ContentGenerator
+          const regeneratedContent = await contentGenerator.generateContent(
+            {
+              ...outline,
+              sections: [
+                {
+                  level: currentSection.level as 2 | 1,
+                  title: currentSection.title,
+                  description: `Regenerate this section. Issues: ${qualityCheckResult.regenerationReason}`,
+                },
+              ],
+            },
+            researchData,
+            userInput,
+          );
+
+          currentSection = regeneratedContent.sections[0];
+          totalTokensUsed += regeneratedContent.totalTokensUsed;
+        }
+      }
+
+      checkedSections.push(currentSection);
+    }
+
+    // Update blog content with checked sections
+    blogContent = {
+      sections: checkedSections,
+      totalWordCount: checkedSections.reduce((sum, s) => sum + s.wordCount, 0),
+      totalTokensUsed,
+      totalGenerationTime: Date.now() - phaseStartTime,
+    };
+
+    return blogContent;
+  } catch (error) {
+    console.log(error);
+
+    throw error;
   }
 }

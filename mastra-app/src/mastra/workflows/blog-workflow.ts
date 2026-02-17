@@ -11,6 +11,7 @@ import {
   BlogContentInputSchema,
   generateOutlineInputSchema,
 } from "./blog-workflow/schema";
+import { generateOutline } from "../helpers/blog/outline-generator";
 
 const researchStep = createStep({
   id: "research",
@@ -30,7 +31,7 @@ const researchStep = createStep({
   },
 });
 
-const generateOutlineStep = createStep({
+const outlineStep = createStep({
   id: "blog-outline",
   description:
     "generate blog outlines for blog generation using research and userInput",
@@ -40,11 +41,16 @@ const generateOutlineStep = createStep({
     if (!inputData) {
       throw new Error("Input data not found");
     }
-    return {};
+
+    const result = await generateOutline(
+      inputData.researchData,
+      inputData.userInput,
+    );
+    return result;
   },
 });
 
-const generateContentStep = createStep({
+const contentStep = createStep({
   id: "content-generation",
   description:
     "generate content section by section using outline and researchData",
@@ -54,6 +60,8 @@ const generateContentStep = createStep({
     if (!inputData) {
       throw new Error("Input data not found");
     }
+
+    const result = await generateCon
     return {};
   },
 });
@@ -98,8 +106,8 @@ const blogWorkflow = createWorkflow({
   }),
 })
   .then(researchStep)
-  .then(generateOutlineStep)
-  .then(generateContentStep)
+  .then(outlineStep)
+  .then(contentStep)
   .then(qualityCheck)
   .then(seoOptimize)
   .commit();

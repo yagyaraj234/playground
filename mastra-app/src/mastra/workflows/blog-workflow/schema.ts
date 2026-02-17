@@ -59,9 +59,12 @@ export const BlogOutlineStepOutputSchema = z.object({
 });
 
 export const generateOutlineInputSchema = z.object({
-  reserchData: researchSchemaOutput,
+  researchData: researchSchemaOutput,
   userInput: userInputSchema,
 });
+export type generateOutlineInputType = z.infer<
+  typeof generateOutlineInputSchema
+>;
 
 // content generation
 

@@ -13,6 +13,7 @@ import {
   QualityCheckType,
 } from "../workflows/blog-workflow/schema";
 import { ContentGenerator } from "./blog/content-generator";
+import { QualityChecker } from "./blog/quality-checker";
 
 export async function searchWeb(
   topic: string,
@@ -262,115 +263,5 @@ export async function research(topic: string): Promise<any> {
       type: "ResearchError",
       message: `Failed to perform research for topic "${topic}": ${error instanceof Error ? error.message : "Unknown error"}`,
     };
-  }
-}
-
-export async function phaseGenerateContent(
-  outline: BlogOutlineType,
-  researchData: researchDataType,
-  userInput: userInputType,
-): Promise<BlogContentType> {
-  const phaseStartTime = Date.now();
-  let totalTokensUsed = 0;
-  let regenerationCount = 0;
-
-  try {
-    const contentGenerator = new ContentGenerator();
-    const qualityChecker = new QualityChecker();
-
-    // Generate initial content
-    let blogContent = await contentGenerator.generateContent(
-      outline,
-      researchData,
-      userInput,
-    );
-
-    totalTokensUsed += blogContent.totalTokensUsed;
-
-    // Check quality of each section and regenerate if needed
-    const checkedSections = [];
-
-    for (const section of blogContent.sections) {
-      let currentSection = section;
-      let attempts = 0;
-      let qualityCheckResult: QualityCheckType | null = null;
-
-      // Try up to 3 times to get a section that passes quality checks
-      while (attempts < 3) {
-        qualityCheckResult = await qualityChecker.checkQuality(
-          currentSection,
-          researchData,
-          userInput,
-        );
-
-        if (qualityCheckResult?.overallPassed) {
-          break;
-        }
-
-        // Regenerate the section
-        attempts++;
-        regenerationCount++;
-
-        if (attempts < 3) {
-          const regenerationPrompt = this.buildRegenerationPrompt(
-            currentSection,
-            qualityCheckResult,
-          );
-
-          // Regenerate using ContentGenerator
-          const regeneratedContent = await contentGenerator.generateContent(
-            {
-              ...outline,
-              sections: [
-                {
-                  level: currentSection.level as 2 | 3,
-                  title: currentSection.title,
-                  description: `Regenerate this section. Issues: ${qualityCheckResult.regenerationReason}`,
-                },
-              ],
-            },
-            researchData,
-            userInput,
-          );
-
-          currentSection = regeneratedContent.sections[0];
-          totalTokensUsed += regeneratedContent.totalTokensUsed;
-        }
-      }
-
-      checkedSections.push(currentSection);
-    }
-
-    // Update blog content with checked sections
-    blogContent = {
-      sections: checkedSections,
-      totalWordCount: checkedSections.reduce((sum, s) => sum + s.wordCount, 0),
-      totalTokensUsed,
-      totalGenerationTime: Date.now() - phaseStartTime,
-    };
-
-    const cost = this.estimateCost(totalTokensUsed);
-
-    this.logPhase(
-      "content-generation",
-      Date.now() - phaseStartTime,
-      totalTokensUsed,
-      regenerationCount > 0 ? "regenerated" : "success",
-      `Content generated: ${blogContent.sections.length} sections, ${blogContent.totalWordCount} words. Regenerations: ${regenerationCount}`,
-    );
-
-    this.totalTokensUsed += totalTokensUsed;
-    this.totalCost += cost;
-
-    return blogContent;
-  } catch (error) {
-    this.logPhase(
-      "content-generation",
-      Date.now() - phaseStartTime,
-      totalTokensUsed,
-      "failed",
-      `Content generation failed: ${error instanceof Error ? error.message : "Unknown error"}`,
-    );
-    throw error;
   }
 }

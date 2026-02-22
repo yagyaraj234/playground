@@ -252,3 +252,5 @@ export type InternalLink = z.infer<typeof InternalLink>;
 export type FAQItem = z.infer<typeof FAQItem>;
 export type ArticleSchema = z.infer<typeof ArticleSchema>;
 export type BlogOutput = z.infer<typeof BlogOutput>;
+export type SectionsCopyable = z.infer<typeof SectionsCopyable>;
+export type BonusOutputs = z.infer<typeof BonusOutputs>;

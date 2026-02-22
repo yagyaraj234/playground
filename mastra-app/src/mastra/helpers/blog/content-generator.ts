@@ -411,13 +411,13 @@ export async function phaseGenerateContent(
     const contentGenerator = new ContentGenerator();
     const qualityChecker = new QualityChecker();
 
-    let blogContent = ContentResponse;
+    // let blogContent = ContentResponse;
     // Generate initial content
-    // let blogContent = await contentGenerator.generateContent(
-    //   outline,
-    //   researchData,
-    //   userInput,
-    // );
+    let blogContent = await contentGenerator.generateContent(
+      outline,
+      researchData,
+      userInput,
+    );
 
     totalTokensUsed += blogContent.totalTokensUsed;
 

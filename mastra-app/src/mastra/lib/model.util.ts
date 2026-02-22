@@ -28,7 +28,3 @@ export async function generateObjectResult({
 
   return output;
 }
-
-export async function getGeminiModel() {
-  return google(CURRENT_MODEL);
-}

@@ -288,9 +288,6 @@ export async function generateSEO(
       userInput,
     );
 
-    const phaseDuration = Date.now() - phaseStartTime;
-    const tokensUsed = 0; // Estimate based on metadata generation
-
     return seoMetadata;
   } catch (error) {
     console.log(

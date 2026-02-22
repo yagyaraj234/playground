@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { Output } from "ai";
-import { generateObjectResult, getGeminiModel } from "../../lib/model.util";
+import { generateObjectResult } from "../../lib/model.util";
 
 import type {
   QualityCheckResult,
@@ -9,6 +9,7 @@ import type {
   ResearchData,
   UserInput,
 } from "../../types/blog";
+import { CURRENT_PROVIDER, getCurrentModel } from "../../lib/model-config";
 
 export class QualityChecker {
   /**
@@ -73,7 +74,7 @@ export class QualityChecker {
     section: GeneratedSection,
     researchData: ResearchData,
   ): Promise<QualityCheck> {
-    const model = await getGeminiModel();
+    const model = await getCurrentModel(CURRENT_PROVIDER);
 
     // Prepare competitor content summaries
     const competitorSummaries = researchData.serpAnalysis.topPages
@@ -142,7 +143,7 @@ Be strict: if the content covers the same ground as competitors, mark it as simi
   private async checkRepetition(
     section: GeneratedSection,
   ): Promise<QualityCheck> {
-    const model = await getGeminiModel();
+    const model = await getCurrentModel(CURRENT_PROVIDER);
     const schema = Output.object({
       schema: z.object({
         hasRepetition: z
@@ -211,7 +212,7 @@ Flag as problematic if:
     section: GeneratedSection,
     UserInput: UserInput,
   ): Promise<QualityCheck> {
-    const model = await getGeminiModel();
+    const model = await getCurrentModel(CURRENT_PROVIDER);
 
     const audienceDescriptions = {
       beginner: "Complete beginners with no prior knowledge",
@@ -284,7 +285,7 @@ Flag as inappropriate if:
   private async checkHallucination(
     section: GeneratedSection,
   ): Promise<QualityCheck> {
-    const model = await getGeminiModel();
+    const model = await getCurrentModel(CURRENT_PROVIDER);
 
     const schema = Output.object({
       schema: z.object({

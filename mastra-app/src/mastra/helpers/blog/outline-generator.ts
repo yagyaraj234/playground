@@ -7,14 +7,15 @@ import type {
   MandatorySections,
 } from "../../types/blog";
 import { Output } from "ai";
-import { generateObjectResult, getGeminiModel } from "../../lib/model.util";
+import { generateObjectResult } from "../../lib/model.util";
+import { CURRENT_PROVIDER, getCurrentModel } from "../../lib/model-config";
 
 export class OutlineGenerator {
   static async generateOutline(
     researchData: ResearchData,
-    userInput: UserInput,
+    userInput: UserInput,               
   ): Promise<BlogOutlineType> {
-    const model = await getGeminiModel();
+    const model = await getCurrentModel(CURRENT_PROVIDER);
 
     // Prepare research summary for outline generation
     const researchSummary = this.prepareResearchSummary(researchData);
@@ -56,7 +57,6 @@ export class OutlineGenerator {
       schema,
       prompt: this.buildOutlinePrompt(researchData, userInput, researchSummary),
     });
-
 
     // Convert section levels from string to number
     const sections: OutlineSection[] = result.sections.map((section: any) => ({

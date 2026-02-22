@@ -234,25 +234,25 @@ async function performQuestionMining(serpAnalysis: any, topic: string) {
 export async function research(topic: string): Promise<any> {
   try {
     //  perform SERP analysis
-    const serpResults = await performSERPAnalysis(topic);
+    const serpAnalysis = await performSERPAnalysis(topic);
 
     //    perform gap detection
-    const gapAnalysis = await performGapDetection(serpResults, topic);
+    const gapAnalysis = await performGapDetection(serpAnalysis, topic);
 
     // Perform question mining
-    const questionMining = await performQuestionMining(serpResults, topic);
+    const questionMining = await performQuestionMining(serpAnalysis, topic);
 
     // Collect warnings
     const warnings: string[] = [];
-    if (serpResults.saturationScore > 80) {
+    if (serpAnalysis.saturationScore > 80) {
       warnings.push(
-        `Topic is highly saturated (${serpResults.saturationScore}% overlap). Consider a unique angle.`,
+        `Topic is highly saturated (${serpAnalysis.saturationScore}% overlap). Consider a unique angle.`,
       );
     }
 
     return {
       topic,
-      serpResults,
+      serpAnalysis,
       gapAnalysis,
       questionMining,
       warnings,

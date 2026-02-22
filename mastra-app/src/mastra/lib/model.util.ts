@@ -5,7 +5,7 @@ import { CURRENT_MODEL } from "./model-config";
 import { Output } from "ai";
 
 interface GenerateObjectParams {
-  model?: string;
+  model?: any;
   schema: any;
   prompt: string;
 }

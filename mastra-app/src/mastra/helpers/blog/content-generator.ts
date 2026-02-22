@@ -381,24 +381,7 @@ Write the conclusion now:`;
   }
 }
 
-const ContentResponse = {
-  sections: [
-    {
-      level: 1,
-      title: "Core Web Vitals Explained: A Simple Guide to LCP, CLS, and INP",
-      content:
-        "have you ever visited a website that felt. off? maybe it loaded slowly, or elements on the page shifted around as you were about to click something important. this isn't annoying; it's a poor user experience. google, like users, wants websites to be fast, stable, and responsive. to measure these crucial aspects of user experience, they introduced a set of metrics called core web vitals. these aren't technical terms; they are direct indicators of how a real person interacts with your site. in this guide, we'll break down the three main core web vitals: largest contentful paint (`lcp`), cumulative layout shift (`cls`), and interaction to next paint (`inp`). these metrics cover the key phases of loading, visual stability, and responsiveness. by the end of this post, you'll have a clear understanding of what each of these metrics means. you'll learn why they are important for your website's users and how they contribute to a smooth, pleasant online experience. consider this your simple map to navigating the essentials of core web vitals.",
-      wordCount: 176,
-      tokensUsed: 1635,
-      generationTime: 7434,
-    },
-  ],
-  totalWordCount: 1144,
-  totalTokensUsed: 6369,
-  totalGenerationTime: 28728,
-};
-
-export async function phaseGenerateContent(
+export async function generateContent(
   outline: BlogOutline,
   researchData: ResearchData,
   userInput: UserInput,
@@ -411,7 +394,6 @@ export async function phaseGenerateContent(
     const contentGenerator = new ContentGenerator();
     const qualityChecker = new QualityChecker();
 
-    // let blogContent = ContentResponse;
     // Generate initial content
     let blogContent = await contentGenerator.generateContent(
       outline,

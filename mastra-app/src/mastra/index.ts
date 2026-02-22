@@ -16,7 +16,6 @@ import {
 } from "./scorers/weather-scorer";
 import { blogAgent } from "./agents/blog-agent";
 import blogWorkflow from "./workflows/blog-workflow";
-import { research, searchWeb } from "./helpers/blog";
 
 export const mastra = new Mastra({
   workflows: { weatherWorkflow, blogWorkflow },

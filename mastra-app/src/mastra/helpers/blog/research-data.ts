@@ -1,19 +1,9 @@
 import { google } from "@ai-sdk/google";
 import { generateText, Output } from "ai";
 
-// local
-import { firecrawlClient } from "../lib/firecrawl";
+import { firecrawlClient } from "../../lib/firecrawl";
 import { SearchWebResponse } from "./types";
-import { pageStructureSchema, questionMiningSchema } from "./schema";
-import {
-  BlogOutlineType,
-  BlogContentType,
-  researchDataType,
-  userInputType,
-  QualityCheckType,
-} from "../workflows/blog-workflow/schema";
-import { ContentGenerator } from "./blog/content-generator";
-import { QualityChecker } from "./blog/quality-checker";
+import { pageStructureSchema, questionMiningSchema } from "../../types/blog";
 
 export async function searchWeb(
   topic: string,

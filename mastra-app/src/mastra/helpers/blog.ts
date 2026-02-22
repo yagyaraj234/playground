@@ -105,7 +105,6 @@ async function performSERPAnalysis(topic: string) {
         result.title,
         content,
       );
-      //   console.log("page--->", resu÷lt.url, content);
       topPages.push(page);
     } catch (error) {
       console.warn(

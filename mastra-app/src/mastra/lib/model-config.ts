@@ -1,1 +1,1 @@
-export const CURRENT_MODEL = "google/gemini-2.5-flash-lite";
+export const CURRENT_MODEL = "gemini-2.5-flash";

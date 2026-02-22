@@ -18,10 +18,7 @@ export const userInputSchema = z.object({
     .describe("The tone of the blog")
     .default("technical")
     .optional(),
-  intent: z
-    .string()
-    .describe("The intent of the blog")
-    .optional(),
+  intent: z.string().describe("The intent of the blog").optional(),
 
   refrence_urls: z
     .array(z.string())
@@ -233,8 +230,10 @@ export const BlogGenerationResult = z.object({
 // ============================================================================
 export type userInputType = z.infer<typeof userInputSchema>;
 export type BlogOutlineType = z.infer<typeof BlogOutlineStepOutputSchema>;
+export type BlogOutline = z.infer<typeof BlogOutlineStepOutputSchema>;
 export type OutlineSection = z.infer<typeof OutlineSection>;
 export type BlogContentType = z.infer<typeof BlogContent>;
+export type BlogContent = z.infer<typeof BlogContent>;
 export type researchDataType = z.infer<typeof researchSchemaOutput>;
 export type ResearchData = z.infer<typeof ResearchData>;
 export type QualityCheckType = z.infer<typeof QualityCheckOutputSchema>;
@@ -248,3 +247,8 @@ export type SERPAnalysisType = z.infer<typeof SERPAnalysis>;
 export type GapAnalysisType = z.infer<typeof GapAnalysis>;
 export type QuestionMiningType = z.infer<typeof QuestionMining>;
 export type MandatorySections = z.infer<typeof MandatorySections>;
+export type SEOMetadata = z.infer<typeof SEOMetadata>;
+export type InternalLink = z.infer<typeof InternalLink>;
+export type FAQItem = z.infer<typeof FAQItem>;
+export type ArticleSchema = z.infer<typeof ArticleSchema>;
+export type BlogOutput = z.infer<typeof BlogOutput>;

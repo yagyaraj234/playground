@@ -18,6 +18,10 @@ export const userInputSchema = z.object({
     .describe("The tone of the blog")
     .default("technical")
     .optional(),
+  intent: z
+    .string()
+    .describe("The intent of the blog")
+    .optional(),
 
   refrence_urls: z
     .array(z.string())

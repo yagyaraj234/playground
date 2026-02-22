@@ -329,7 +329,6 @@ For each hallucination found, explain:
 Be thorough: hallucinations damage credibility.`,
     });
 
-    console.log("result", result);
     const passed = !result?.hasHallucinations;
     const hallucinationsStr =
       result?.hallucinations?.length > 0
@@ -339,12 +338,6 @@ Be thorough: hallucinations damage credibility.`,
         : "None detected";
 
     const details = `Hallucinations: ${hallucinationsStr}. ${result?.explanation}`;
-
-    console.log("final", {
-      score: result?.hasHallucinations ? 0 : 100,
-      passed,
-      details,
-    });
 
     return {
       score: result?.hasHallucinations ? 0 : 100,

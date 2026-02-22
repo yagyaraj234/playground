@@ -1,6 +1,5 @@
 import { generateText } from "ai";
 import { google } from "@ai-sdk/google";
-
 import { CURRENT_MODEL } from "../../lib/model-config";
 
 import {

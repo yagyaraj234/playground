@@ -408,7 +408,7 @@ Return ONLY the LinkedIn post, nothing else.`,
   }
 }
 
-export async function phaseFormatOutput(
+export async function formatOutput(
   blogContent: BlogContent,
   seoMetadata: SEOMetadata,
   userInput: UserInput,

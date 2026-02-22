@@ -8,8 +8,7 @@ export const userInputSchema = z.object({
     .describe("The topic to research")
     .default(
       "Complete Guide to Core Web Vitals (LCP, CLS, INP Explained Simply)",
-    )
-    .optional(),
+    ),
   audience: z
     .enum(["beginner", "intermediate", "expert"])
     .describe("The audience for the blog")

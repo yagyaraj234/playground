@@ -36,17 +36,19 @@ export class OutlineGenerator {
         .describe("Whether this section should include a code example"),
     });
 
-    const schema = z.object({
-      h1: z.string().describe("Main H1 heading for the blog"),
-      sections: z
-        .array(outlineSectionSchema)
-        .describe("Array of H2 and H3 sections"),
-      internalLinkSuggestions: z
-        .array(z.string())
-        .describe("Suggested internal links to include"),
-      tradeOffsToDiscuss: z
-        .array(z.string())
-        .describe("Trade-offs or considerations to discuss"),
+    const schema = Output.object({
+      schema: z.object({
+        h1: z.string().describe("Main H1 heading for the blog"),
+        sections: z
+          .array(outlineSectionSchema)
+          .describe("Array of H2 and H3 sections"),
+        internalLinkSuggestions: z
+          .array(z.string())
+          .describe("Suggested internal links to include"),
+        tradeOffsToDiscuss: z
+          .array(z.string())
+          .describe("Trade-offs or considerations to discuss"),
+      }),
     });
 
     const result = await generateObjectResult({
@@ -55,16 +57,15 @@ export class OutlineGenerator {
       prompt: this.buildOutlinePrompt(researchData, userInput, researchSummary),
     });
 
+
     // Convert section levels from string to number
-    const sections: OutlineSection[] = result.object.sections.map(
-      (section) => ({
-        level: parseInt(section.level) as 2 | 3,
-        title: section.title,
-        description: section.description,
-        relatedQuestions: section.relatedQuestions,
-        shouldIncludeExample: section.shouldIncludeExample,
-      }),
-    );
+    const sections: OutlineSection[] = result.sections.map((section: any) => ({
+      level: parseInt(section.level) as 2 | 3,
+      title: section.title,
+      description: section.description,
+      relatedQuestions: section.relatedQuestions,
+      shouldIncludeExample: section.shouldIncludeExample,
+    }));
 
     // Verify mandatory sections are present
     const mandatorySections = this.verifyMandatorySections(sections);
@@ -73,10 +74,10 @@ export class OutlineGenerator {
     this.verifyNoFillerSections(sections);
 
     return {
-      h1: result.object.h1,
+      h1: result.h1,
       sections,
-      internalLinkSuggestions: result.object.internalLinkSuggestions,
-      tradeOffsToDiscuss: result.object.tradeOffsToDiscuss,
+      internalLinkSuggestions: result.internalLinkSuggestions,
+      tradeOffsToDiscuss: result.tradeOffsToDiscuss,
       mandatorySections,
     };
   }
@@ -88,22 +89,23 @@ export class OutlineGenerator {
     const { serpAnalysis, gapAnalysis, questionMining } = researchData;
 
     // Get top competitor headings
-    const topHeadings = serpAnalysis.topPages
+    const topPages = serpAnalysis?.topPages ?? [];
+    const topHeadings = topPages
       .slice(0, 3)
-      .flatMap((page) => [page.h1, ...page.h2s.slice(0, 3)])
+      .flatMap((page) => [page.h1, ...(page.h2s ?? []).slice(0, 3)])
       .filter((h) => h && h.length > 0)
       .slice(0, 10);
 
     // Get gaps and questions
     const gaps = [
-      ...gapAnalysis.whatIsMissing.slice(0, 2),
-      ...gapAnalysis.whatIsShallow.slice(0, 2),
+      ...(gapAnalysis?.whatIsMissing ?? []).slice(0, 2),
+      ...(gapAnalysis?.whatIsShallow ?? []).slice(0, 2),
     ];
 
     const questions = [
-      ...questionMining.beginnerQuestions.slice(0, 2),
-      ...questionMining.whyDoesThisBreak.slice(0, 2),
-      ...questionMining.whenNotToUse.slice(0, 2),
+      ...(questionMining?.beginnerQuestions ?? []).slice(0, 2),
+      ...(questionMining?.whyDoesThisBreak ?? []).slice(0, 2),
+      ...(questionMining?.whenNotToUse ?? []).slice(0, 2),
     ];
 
     return `
@@ -116,7 +118,7 @@ ${gaps.map((g) => `- ${g}`).join("\n")}
 User Questions to Answer:
 ${questions.map((q) => `- ${q}`).join("\n")}
 
-Saturation Score: ${serpAnalysis.saturationScore}%
+Saturation Score: ${serpAnalysis?.saturationScore ?? 0}%
 `;
   }
 
@@ -245,15 +247,15 @@ export async function generateOutline(
 ) {
   const phaseStartTime = Date.now();
   try {
-    const outlineGenerator = new OutlineGenerator();
-    const outline = await outlineGenerator.generateOutline(
+    // const outlineGenerator = new OutlineGenerator();
+    const outline = await OutlineGenerator.generateOutline(
       researchData,
       userInput,
     );
 
     const phaseDuration = Date.now() - phaseStartTime;
     const tokensUsed = 0; // Estimate based on outline complexity
-    const cost = this.estimateCost(tokensUsed);
+    // const cost = this.estimateCost(tokensUsed);
 
     // this.logPhase(
     //   "outline-generation",
@@ -263,18 +265,18 @@ export async function generateOutline(
     //   `Outline generated with ${outline.sections.length} sections. H1: "${outline.h1}". Mandatory sections: ${Object.values(outline.mandatorySections).filter((v) => v).length}/4`,
     // );
 
-    this.totalTokensUsed += tokensUsed;
-    this.totalCost += cost;
+    // this.totalTokensUsed += tokensUsed;
+    // this.totalCost += cost;
 
     return outline;
   } catch (error) {
-    this.logPhase(
-      "outline-generation",
-      Date.now() - phaseStartTime,
-      0,
-      "failed",
-      `Outline generation failed: ${error instanceof Error ? error.message : "Unknown error"}`,
-    );
+    // this.logPhase(
+    //   "outline-generation",
+    //   Date.now() - phaseStartTime,
+    //   0,
+    //   "failed",
+    //   `Outline generation failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+    // );
     throw error;
   }
 }

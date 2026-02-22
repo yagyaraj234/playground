@@ -15,19 +15,19 @@ export class QualityChecker {
    * Checks quality of a generated section
    * @param section - The generated section to check
    * @param researchData - The research data for similarity comparison
-   * @param validatedInput - The validated blog generation input
+   * @param UserInput - The validated blog generation input
    * @returns QualityCheckResult with all checks and regeneration flag
    */
   async checkQuality(
     section: GeneratedSection,
     researchData: ResearchData,
-    validatedInput: UserInput,
+    UserInput: UserInput,
   ): Promise<QualityCheckResult> {
     // Run all quality checks in parallel
     const [similarity, repetition, clarity, hallucination] = await Promise.all([
       this.checkSimilarity(section, researchData),
       this.checkRepetition(section),
-      this.checkClarity(section, validatedInput),
+      this.checkClarity(section, UserInput),
       this.checkHallucination(section),
     ]);
 
@@ -125,11 +125,11 @@ Consider:
 Be strict: if the content covers the same ground as competitors, mark it as similar.`,
     });
 
-    const passed = !result.object.isSimilar;
-    const details = `Similarity: ${result.object.similarityScore}%. ${result.object.explanation}`;
+    const passed = !result?.isSimilar;
+    const details = `Similarity: ${result?.similarityScore}%. ${result?.explanation}`;
 
     return {
-      score: result.object.similarityScore,
+      score: result?.similarityScore,
       passed,
       details,
     };
@@ -186,18 +186,18 @@ Flag as problematic if:
 - Repetition suggests poor writing quality`,
     });
 
-    const passed = !result.object.hasRepetition;
+    const passed = !result?.hasRepetition;
     const repeatedPhrasesStr =
-      result.object.repeatedPhrases.length > 0
-        ? result.object.repeatedPhrases
+      result?.repeatedPhrases.length > 0
+        ? result?.repeatedPhrases
             .map((p) => `"${p.phrase}" (${p.count}x)`)
             .join(", ")
         : "None";
 
-    const details = `Repeated phrases: ${repeatedPhrasesStr}. ${result.object.explanation}`;
+    const details = `Repeated phrases: ${repeatedPhrasesStr}. ${result?.explanation}`;
 
     return {
-      score: result.object.hasRepetition ? 0 : 100,
+      score: result?.hasRepetition ? 0 : 100,
       passed,
       details,
     };
@@ -209,7 +209,7 @@ Flag as problematic if:
    */
   private async checkClarity(
     section: GeneratedSection,
-    validatedInput: UserInput,
+    UserInput: UserInput,
   ): Promise<QualityCheck> {
     const model = await getGeminiModel();
 
@@ -239,7 +239,7 @@ Flag as problematic if:
       schema,
       prompt: `Assess the clarity of this blog section for the target audience.
 
-Target Audience: ${validatedInput.audience} (${audienceDescriptions[UserInput.audience]})
+Target Audience: ${UserInput.audience} (${audienceDescriptions[UserInput.audience]})
 
 Section Title: ${section.title}
 Section Content:
@@ -265,16 +265,14 @@ Flag as inappropriate if:
 - Poor organization`,
     });
 
-    const passed = result.object.isAppropriate;
+    const passed = result?.isAppropriate;
     const issuesStr =
-      result.object.issues.length > 0
-        ? result.object.issues.join("; ")
-        : "None";
+      result?.issues.length > 0 ? result?.issues.join("; ") : "None";
 
-    const details = `Clarity: ${result.object.clarityScore}/100. Issues: ${issuesStr}. ${result.object.explanation}`;
+    const details = `Clarity: ${result?.clarityScore}/100. Issues: ${issuesStr}. ${result?.explanation}`;
 
     return {
-      score: result.object.clarityScore,
+      score: result?.clarityScore,
       passed,
       details,
     };
@@ -331,18 +329,25 @@ For each hallucination found, explain:
 Be thorough: hallucinations damage credibility.`,
     });
 
-    const passed = !result.object.hasHallucinations;
+    console.log("result", result);
+    const passed = !result?.hasHallucinations;
     const hallucinationsStr =
-      result.object.hallucinations.length > 0
-        ? result.object.hallucinations
+      result?.hallucinations?.length > 0
+        ? result?.hallucinations
             .map((h: any) => `"${h.claim}" - ${h.issue}`)
             .join("; ")
         : "None detected";
 
-    const details = `Hallucinations: ${hallucinationsStr}. ${result.object.explanation}`;
+    const details = `Hallucinations: ${hallucinationsStr}. ${result?.explanation}`;
+
+    console.log("final", {
+      score: result?.hasHallucinations ? 0 : 100,
+      passed,
+      details,
+    });
 
     return {
-      score: result.object.hasHallucinations ? 0 : 100,
+      score: result?.hasHallucinations ? 0 : 100,
       passed,
       details,
     };

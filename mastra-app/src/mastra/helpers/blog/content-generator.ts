@@ -12,21 +12,14 @@ import {
 } from "../../types/blog";
 import type { ResearchData, UserInput } from "../../types/blog";
 import { QualityChecker } from "./quality-checker";
+import pino from "pino";
 
-async function buildRegenerationPrompt(
-  section: any,
-  qualityCheckResult: QualityCheckResult,
-): Promise<string> {
-  return `Regenerate this section to fix the following issues:
-
-Section: ${section.title}
-Current content: ${section.content.substring(0, 500)}...
-
-Issues to fix:
-${qualityCheckResult.regenerationReason}
-
-Regenerate the section addressing these issues.`;
-}
+const logger = pino({
+  transport: {
+    target: "pino-pretty",
+    options: { colorize: true },
+  },
+});
 
 export class ContentGenerator {
   /**
@@ -66,13 +59,19 @@ export class ContentGenerator {
       generationTime: Date.now() - introStartTime,
     };
 
+    logger.info(
+      { sectionTitle: introSection.title },
+      "Generated intro section",
+    );
     sections.push(introSection);
     totalWordCount += introSection.wordCount;
     totalTokensUsed += introSection.tokensUsed;
     totalGenerationTime += introSection.generationTime;
 
-    // Generate H2 and H3 sections
-    for (const outlineSection of outline.sections) {
+    logger.info("Generating H2 and H3 sections in parallel...");
+
+    // Generate H2 and H3 sections in parallel
+    const sectionPromises = outline.sections.map(async (outlineSection) => {
       const sectionStartTime = Date.now();
 
       const prompt =
@@ -89,25 +88,44 @@ export class ContentGenerator {
               validatedInput,
               researchData,
             );
-
-      const { text, usage } = await generateText({
-        model: google(CURRENT_MODEL),
-        prompt,
-        temperature: 0.7,
-      });
+      let text = "";
+      let usage: { totalTokens?: number } = { totalTokens: 0 };
+      try {
+        const { text: generatedText, usage: generatedUsage } =
+          await generateText({
+            model: google(CURRENT_MODEL),
+            prompt,
+            temperature: 0.7,
+          });
+        text = generatedText;
+        usage = generatedUsage;
+      } catch (error) {
+        logger.error(
+          { error, sectionTitle: outlineSection.title },
+          "Error generating section",
+        );
+      }
 
       const content = this.enforceStyleRules(text);
       const cleanedContent = this.removeFluff(content);
 
-      const section: GeneratedSection = {
+      return {
         level: outlineSection.level,
         title: outlineSection.title,
         content: cleanedContent,
         wordCount: this.countWords(cleanedContent),
         tokensUsed: usage?.totalTokens || 0,
         generationTime: Date.now() - sectionStartTime,
-      };
+      } as GeneratedSection;
+    });
 
+    const generatedSections = await Promise.all(sectionPromises);
+    logger.info(
+      { count: generatedSections.length },
+      "Parallel generation complete",
+    );
+
+    for (const section of generatedSections) {
       sections.push(section);
       totalWordCount += section.wordCount;
       totalTokensUsed += section.tokensUsed;
@@ -139,12 +157,64 @@ export class ContentGenerator {
     totalTokensUsed += conclusionSection.tokensUsed;
     totalGenerationTime += conclusionSection.generationTime;
 
+    logger.info("Content generation finished successfully");
+
     return {
       sections,
       totalWordCount,
       totalTokensUsed,
       totalGenerationTime,
     };
+  }
+
+  /**
+   * Regenerates a single section based on quality check feedback
+   */
+  async regenerateSection(
+    section: GeneratedSection,
+    qualityCheckResult: QualityCheckType,
+  ): Promise<GeneratedSection> {
+    const sectionStartTime = Date.now();
+    const prompt = `Regenerate this section to fix the following issues:
+
+Section: ${section.title}
+Current content: ${section.content.substring(0, 500)}...
+
+Issues to fix:
+${qualityCheckResult.regenerationReason}
+
+Regenerate the section addressing these issues.`;
+
+    let text = "";
+    let usage: { totalTokens?: number } = { totalTokens: 0 };
+    try {
+      const { text: generatedText, usage: generatedUsage } = await generateText(
+        {
+          model: google(CURRENT_MODEL),
+          prompt,
+          temperature: 0.7,
+        },
+      );
+      text = generatedText;
+      usage = generatedUsage;
+    } catch (error) {
+      logger.error(
+        { error, sectionTitle: section.title },
+        "Error regenerating section",
+      );
+    }
+
+    const content = this.enforceStyleRules(text);
+    const cleanedContent = this.removeFluff(content);
+
+    return {
+      level: section.level,
+      title: section.title,
+      content: cleanedContent,
+      wordCount: this.countWords(cleanedContent),
+      tokensUsed: usage?.totalTokens || 0,
+      generationTime: Date.now() - sectionStartTime,
+    } as GeneratedSection;
   }
 
   /**
@@ -234,6 +304,7 @@ CONTENT GUIDELINES:
 - Use experience snippets: "this fails when", "I've seen this break", "people assume X but"
 - Keep it focused and avoid tangents
 - Target length: 300-500 words${specialGuidance}
+- Don't Add Intro hook like ('Have you ever landed on a website only to find it frustratingly slow to load, or seen text and buttons jump around as you're about to click? These common, annoying experiences are exactly what google's core web vitals are designed to measure and improve. core web vitals are a set of three specific metrics that evaluate your website','"Have you ever landed on a website only to wait for content to appear, or tried to click something and the page suddenly')
 
 Write the section now:`;
   }
@@ -270,6 +341,7 @@ CONTENT GUIDELINES:
 - Include code examples if relevant
 - Keep it concise and focused
 - Target length: 150-300 words
+- Don't Add Intro hook like ('Have you ever landed on a website only to find it frustratingly slow to load, or seen text and buttons jump around as you're about to click? These common, annoying experiences are exactly what google's core web vitals are designed to measure and improve. core web vitals are a set of three specific metrics that evaluate your website','"Have you ever landed on a website only to wait for content to appear, or tried to click something and the page suddenly')
 
 Write the subsection now:`;
   }
@@ -390,6 +462,11 @@ export async function generateContent(
   let totalTokensUsed = 0;
   let regenerationCount = 0;
 
+  logger.info(
+    { topic: userInput.topic },
+    "Starting content generation pipeline",
+  );
+
   try {
     const contentGenerator = new ContentGenerator();
     const qualityChecker = new QualityChecker();
@@ -403,13 +480,18 @@ export async function generateContent(
 
     totalTokensUsed += blogContent.totalTokensUsed;
 
-    // Check quality of each section and regenerate if needed
-    const checkedSections = [];
-
-    for (const section of blogContent.sections) {
+    // Check quality of each section and regenerate if needed in parallel
+    const sectionPromises = blogContent.sections.map(async (section) => {
       let currentSection = section;
       let attempts = 0;
+      let sectionTokensUsed = 0;
+      let sectionRegenerationCount = 0;
       let qualityCheckResult: QualityCheckType | null = null;
+
+      logger.info(
+        { sectionTitle: currentSection.title },
+        "Starting quality checks for section",
+      );
 
       // Try up to 3 times to get a section that passes quality checks
       while (attempts < 3) {
@@ -420,42 +502,50 @@ export async function generateContent(
         );
 
         if (qualityCheckResult?.overallPassed) {
+          logger.info(
+            { sectionTitle: currentSection.title, attempts },
+            "Section passed quality checks",
+          );
           break;
         }
 
         // Regenerate the section
         attempts++;
-        regenerationCount++;
+        sectionRegenerationCount++;
+        logger.warn(
+          {
+            sectionTitle: currentSection.title,
+            attempts,
+            reason: qualityCheckResult?.regenerationReason,
+          },
+          "Section failed quality checks, regenerating",
+        );
 
         if (attempts < 3) {
-          const regenerationPrompt = await buildRegenerationPrompt(
+          // Regenerate using ContentGenerator
+          currentSection = await contentGenerator.regenerateSection(
             currentSection,
             qualityCheckResult,
           );
 
-          // Regenerate using ContentGenerator
-          const regeneratedContent = await contentGenerator.generateContent(
-            {
-              ...outline,
-              sections: [
-                {
-                  level: currentSection.level as 2 | 1,
-                  title: currentSection.title,
-                  description: `Regenerate this section. Issues: ${qualityCheckResult.regenerationReason}`,
-                },
-              ],
-            },
-            researchData,
-            userInput,
-          );
-
-          currentSection = regeneratedContent.sections[0];
-          totalTokensUsed += regeneratedContent.totalTokensUsed;
+          sectionTokensUsed += currentSection.tokensUsed;
         }
       }
 
-      checkedSections.push(currentSection);
-    }
+      return {
+        section: currentSection,
+        tokensUsed: sectionTokensUsed,
+        regenerationCount: sectionRegenerationCount,
+      };
+    });
+
+    const qualityCheckedResults = await Promise.all(sectionPromises);
+
+    const checkedSections = qualityCheckedResults.map((result) => {
+      totalTokensUsed += result.tokensUsed;
+      regenerationCount += result.regenerationCount;
+      return result.section;
+    });
 
     // Update blog content with checked sections
     blogContent = {
@@ -465,10 +555,13 @@ export async function generateContent(
       totalGenerationTime: Date.now() - phaseStartTime,
     };
 
+    logger.info(
+      { totalTokensUsed, regenerationCount },
+      "Content generation pipeline completed",
+    );
     return blogContent;
   } catch (error) {
-    console.log(error);
-
+    logger.error({ error }, "Error in content generation pipeline");
     throw error;
   }
 }

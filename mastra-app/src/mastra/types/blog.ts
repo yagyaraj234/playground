@@ -236,8 +236,8 @@ export const SectionsCopyable = z.record(z.string(), z.string());
 
 export const BlogOutput = z.object({
   markdown: z.string(),
-  mdx: z.string(),
-  html: z.string(),
+  mdx: z.string().optional(),
+  html: z.string().optional(),
   sectionsCopyable: SectionsCopyable,
   bonusOutputs: BonusOutputs,
   metadata: SEOMetadata,

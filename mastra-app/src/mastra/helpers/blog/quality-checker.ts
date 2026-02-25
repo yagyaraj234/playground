@@ -95,7 +95,7 @@ Key Points: ${page.keyPoints.join(", ")}`,
           .describe("Similarity score as percentage (0-100)"),
         isSimilar: z
           .boolean()
-          .describe("Whether content is >70% similar to competitors"),
+          .describe("Whether content is > 80% similar to competitors"),
         explanation: z.string().describe("Explanation of similarity findings"),
       }),
     });
@@ -114,7 +114,7 @@ ${competitorSummaries}
 
 Determine:
 1. Similarity score (0-100) - how much of this content is similar to competitors
-2. Whether it's >70% similar (flag for regeneration)
+2. Whether it's >80% similar (flag for regeneration)
 3. Explanation of findings
 
 Consider:

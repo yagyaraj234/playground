@@ -119,8 +119,8 @@ export default function Header() {
         </Menu.Root>
       </nav>
 
-      <nav className="flex gap-6 items-center border-r px-4  border-zinc-800">
-        <button className="bg-white text-zinc-950 px-4 rounded-lg py-2 cursor-pointer">
+      <nav className="flex gap-6 items-center border-r px-4  border-zinc-800 h-full">
+        <button className="bg-white text-zinc-950 px-4 rounded-lg py-1.5  cursor-pointer">
           Talk to us
         </button>
       </nav>

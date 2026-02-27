@@ -1,36 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import ThemeToggle from './ThemeToggle'
-import { Menu } from '@base-ui/react/menu'
-import { ChevronDown } from 'lucide-react'
 
 export default function Header() {
-  return (
-    <header>
-      <nav className="flex items-center justify-start gap-4">
-        <h1 className="text-xl font-medium">mirai</h1>
-
-        <Menu.Root>
-          <Menu.Trigger>
-            Product <ChevronDown className="text-4" />
-          </Menu.Trigger>
-          <Menu.Portal>
-            <Menu.Positioner sideOffset={8}>
-              <Menu.Popup>
-                <Menu.Item>Add to Library</Menu.Item>
-                <Menu.Item>Add to Playlist</Menu.Item>
-                <Menu.Separator />
-                <Menu.Item>Play Next</Menu.Item>
-                <Menu.Item>Play Last</Menu.Item>
-                <Menu.Separator />
-                <Menu.Item>Favorite</Menu.Item>
-                <Menu.Item>Share</Menu.Item>
-              </Menu.Popup>
-            </Menu.Positioner>
-          </Menu.Portal>
-        </Menu.Root>
-      </nav>
-    </header>
-  )
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--line)] bg-[var(--header-bg)] px-4 backdrop-blur-lg">
       <nav className="page-wrap flex flex-wrap items-center gap-x-3 gap-y-2 py-3 sm:py-4">

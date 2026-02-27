@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.2.0",
+    "@tabler/icons-react": "^3.37.1",
     "@tailwindcss/vite": "^4.1.18",
     "@tanstack/react-devtools": "^0.7.0",
     "@tanstack/react-router": "^1.132.0",

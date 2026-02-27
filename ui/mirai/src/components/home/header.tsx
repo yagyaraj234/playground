@@ -45,11 +45,14 @@ export default function Header() {
   return (
     <header className="flex justify-between items-center border-b  px-4 lg:px-8   border-zinc-800">
       <nav className="flex items-center justify-start gap-6 border-l px-4 border-zinc-800">
-        <h1 className="text-2xl font-semibold text-white py-2">mirai</h1>
+        <h1 className="text-2xl font-semibold text-white py-2 font-sans mr-6">
+          mirai
+        </h1>
 
         <Menu.Root>
           <Menu.Trigger
-            className={`flex gap-2 items-center text-white/70 text-sm font-semibold hover:bg-zinc-800 transition-colors duration-300 p-2 rounded-lg `}
+            openOnHover
+            className={`flex gap-2 items-center text-text text-sm font-medium hover:bg-zinc-800 transition-colors duration-300 p-2 rounded-lg `}
           >
             Product <ChevronDown className="text-4" />
           </Menu.Trigger>
@@ -65,7 +68,7 @@ export default function Header() {
                 {Items.map((i, idx) => (
                   <Menu.Item
                     key={idx}
-                    className="p-1.5 w-full rounded border hover:bg-zinc-800 hover:border-zinc-700 border-zinc-900 cursor-pointer mr-24 transition-colors duration-300"
+                    className="p-1.5 w-full rounded border hover:bg-zinc-800 hover:border-zinc-700 border-zinc-900 cursor-pointer mr-24 transition-colors duration-200"
                   >
                     {i.name}{' '}
                   </Menu.Item>
@@ -75,11 +78,11 @@ export default function Header() {
           </Menu.Portal>
         </Menu.Root>
 
-        <ul className="flex gap-6 items-center text-lg py-2">
+        <ul className="flex gap-4 items-center text-lg py-2">
           {NavIitems?.map((item, idx) => (
             <li
               key={idx}
-              className="flex  cursor-pointer gap-2 items-center text-white/70 text-sm font-semibold hover:bg-zinc-800 transition-colors duration-300 p-2 px-4 rounded-lg "
+              className="flex  cursor-pointer gap-2 items-center text-text text-sm font-medium hover:bg-zinc-800 transition-colors duration-300 p-2 px-4 rounded-lg "
             >
               {item.name}
             </li>
@@ -88,7 +91,8 @@ export default function Header() {
 
         <Menu.Root>
           <Menu.Trigger
-            className={`flex gap-2 items-center text-white/70 text-sm font-semibold hover:bg-zinc-800 transition-colors duration-300 p-2 rounded-lg `}
+            openOnHover
+            className={`flex gap-2 items-center text-text text-sm font-medium hover:bg-zinc-800 transition-colors duration-300 p-2 rounded-lg `}
           >
             Company <ChevronDown className="text-4" />
           </Menu.Trigger>
@@ -104,7 +108,7 @@ export default function Header() {
                 {Items.map((i, idx) => (
                   <Menu.Item
                     key={idx}
-                    className="p-1.5 w-full rounded border hover:bg-zinc-800 hover:border-zinc-700 border-zinc-900 cursor-pointer mr-24 transition-colors duration-300"
+                    className="p-1.5 w-full rounded border hover:bg-zinc-800 hover:border-zinc-700 border-zinc-900 cursor-pointer mr-24 transition-colors duration-200"
                   >
                     {i.name}{' '}
                   </Menu.Item>

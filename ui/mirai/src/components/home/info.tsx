@@ -18,7 +18,7 @@ const AccordionItems = [
       'Quantize with outstanding quality.',
       'A lot of supported architectures out of the box.',
     ],
-    icon: <IconEaseInOut />,
+    icon: IconEaseInOut,
   },
   {
     title: 'Benchmarks',
@@ -28,7 +28,7 @@ const AccordionItems = [
       'High-throughput generation.',
       'Minimal memory usage.',
     ],
-    icon: <IconBrandSpeedtest />,
+    icon: IconBrandSpeedtest,
   },
   {
     title: 'Distribute.',
@@ -38,7 +38,7 @@ const AccordionItems = [
       'Bindings for any language.',
       'Precise access control.',
     ],
-    icon: <IconCopy />,
+    icon: IconCopy,
   },
   {
     title: 'Run',
@@ -48,7 +48,7 @@ const AccordionItems = [
       'Structured output.',
       'Kernel-level optimizations.',
     ],
-    icon: <IconHammer />,
+    icon: IconHammer,
   },
 ]
 
@@ -111,7 +111,7 @@ function InfoAccordion() {
               className={`flex gap-4 items-center w-full justify-between`}
             >
               <span className="flex gap-4 items-center">
-                {item.icon}
+                <item.icon className="text-text " size={20} />
                 <span className="text-xl font-semibold">{item.title}</span>
               </span>
               <IconChevronDown />
@@ -120,9 +120,9 @@ function InfoAccordion() {
           <Accordion.Panel>
             <div className="text-white/80 mt-2 text-lg">{item.description}</div>
 
-            <ul className="mt-4 flex flex-col gap-2">
+            <ul className="mt-8 flex flex-col gap-2 ">
               {item.items?.map((item, idx) => (
-                <li className="flex gap-4 items-center" key={idx}>
+                <li className="flex gap-4 items-center text-white/90" key={idx}>
                   {' '}
                   <IconCheck size={16} /> {item}
                 </li>
@@ -137,9 +137,12 @@ function InfoAccordion() {
 
 export default function Info() {
   return (
-    <div className="px-4 lg:px-8 my-20">
-      <h3 className="text-4xl ">
-        Convert, optimize, distribute <br /> & run your models on Apple devices.
+    <div className="px-4 lg:px-8 my-16">
+      <h3 className="text-4xl sm:text-5xl font-medium leading-normal">
+        Convert, optimize, distribute <br />{' '}
+        <span className="text-white/80">
+          & run your models on Apple devices.
+        </span>
       </h3>
 
       <div className="grid sm:grid-cols-2 h-full mt-6 ring ring-white/10 max-sm:flex max-sm:flex-col-reverse ">

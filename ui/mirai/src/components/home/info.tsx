@@ -142,7 +142,7 @@ export default function Info() {
         Convert, optimize, distribute <br /> & run your models on Apple devices.
       </h3>
 
-      <div className="grid sm:grid-cols-2 h-full mt-6 ">
+      <div className="grid sm:grid-cols-2 h-full mt-6 ring ring-white/10 max-sm:flex max-sm:flex-col-reverse ">
         <div
           className="w-full p-2 "
           style={{
@@ -151,7 +151,7 @@ export default function Info() {
         >
           <Terminal />
         </div>
-        <div className="w-full bg-zinc-800 ring ring-white/10">
+        <div className="w-full bg-zinc-800 ">
           <InfoAccordion />
         </div>
       </div>

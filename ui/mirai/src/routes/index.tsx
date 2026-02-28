@@ -7,10 +7,9 @@ export const Route = createFileRoute('/')({ component: App })
 
 function App() {
   return (
-    <main className="">
+    <main className="mx-auto">
       <Header />
       <Hero />
-
       <Info />
     </main>
   )

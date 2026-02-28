@@ -45,14 +45,14 @@ export default function Header() {
   return (
     <header className="flex justify-between items-center border-b  px-4 lg:px-8   border-zinc-800">
       <nav className="flex items-center justify-start gap-6 border-l px-4 border-zinc-800">
-        <h1 className="text-2xl font-semibold text-white py-2 font-sans mr-6">
+        <h1 className="text-2xl font-semibold text-white py-4 font-sans mr-6">
           mirai
         </h1>
 
         <Menu.Root>
           <Menu.Trigger
             openOnHover
-            className={`flex gap-2 items-center text-text text-sm font-medium hover:bg-zinc-800 transition-colors duration-300 p-2 rounded-lg `}
+            className={`max-sm:hidden flex gap-2 items-center text-text text-sm font-medium hover:bg-zinc-800 transition-colors duration-300 p-2 rounded-lg `}
           >
             Product <ChevronDown className="text-4" />
           </Menu.Trigger>
@@ -78,7 +78,7 @@ export default function Header() {
           </Menu.Portal>
         </Menu.Root>
 
-        <ul className="flex gap-4 items-center text-lg py-2">
+        <ul className="flex gap-4 items-center text-lg py-4 max-sm:hidden">
           {NavIitems?.map((item, idx) => (
             <li
               key={idx}
@@ -92,7 +92,7 @@ export default function Header() {
         <Menu.Root>
           <Menu.Trigger
             openOnHover
-            className={`flex gap-2 items-center text-text text-sm font-medium hover:bg-zinc-800 transition-colors duration-300 p-2 rounded-lg `}
+            className={`max-sm:hidden flex gap-2 items-center text-text text-sm font-medium hover:bg-zinc-800 transition-colors duration-300 p-2 rounded-lg `}
           >
             Company <ChevronDown className="text-4" />
           </Menu.Trigger>
@@ -119,7 +119,7 @@ export default function Header() {
         </Menu.Root>
       </nav>
 
-      <nav className="flex gap-6 items-center border-r px-4  border-zinc-800 h-full">
+      <nav className="flex gap-6 items-center border-r py-3.5 pr-4  border-zinc-800 h-full">
         <button className="bg-white text-zinc-950 px-4 rounded-lg py-1.5  cursor-pointer">
           Talk to us
         </button>

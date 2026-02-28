@@ -3,10 +3,10 @@ import { IconArrowNarrowRight } from '@tabler/icons-react'
 export default function Hero() {
   return (
     <main className="p-4 lg:px-8 select-none">
-      <h1 className="text-5xl font-bold text-white mt-20 leading-relaxed">
-        Your models. Every Applce device.
+      <h1 className="text-3xl sm:text-5xl font-bold text-white sm:mt-20 mt-12 leading-relaxed">
+        Your models. Every Apple device.
       </h1>
-      <h2 className="text-5xl font-semibold text-text">
+      <h2 className="text-3xl sm:text-5xl font-semibold text-text">
         The fastest inference engine for Apple Silicon{' '}
       </h2>
 

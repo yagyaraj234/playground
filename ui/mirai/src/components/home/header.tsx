@@ -1,29 +1,39 @@
 import { Menu } from '@base-ui/react/menu'
-import { ChevronDown, CpuIcon } from 'lucide-react'
+import {
+  IconBrandAndroid,
+  IconChartInfographic,
+  IconCode,
+  IconCpu2,
+  IconDeviceDesktopCode,
+  IconEaseInOut,
+} from '@tabler/icons-react'
+import { ChevronDown } from 'lucide-react'
 
 type Item = {
   name: string
   link: string
-  icon?: React.ReactElement
+  icon: React.ElementType
 }
 
 const Items: Item[] = [
   {
     name: 'Platform / SDK',
     link: '#',
-    icon: CpuIcon,
+    icon: IconDeviceDesktopCode,
   },
-  { name: 'Infernece Engine', link: '#' },
+  { name: 'Infernece Engine', link: '#', icon: IconCpu2 },
   {
     name: 'Model conversion',
     link: '#',
+    icon: IconEaseInOut,
   },
-  { name: 'CLI tool', link: '#' },
+  { name: 'CLI tool', link: '#', icon: IconCode },
   {
     name: 'Cloud infernece',
     link: '#',
+    icon: IconChartInfographic,
   },
-  { name: 'Benchmarks', link: '#' },
+  { name: 'Benchmarks', link: '#', icon: IconBrandAndroid },
 ]
 
 const NavIitems = [
@@ -65,14 +75,19 @@ export default function Header() {
               align="start"
             >
               <Menu.Popup>
-                {Items.map((i, idx) => (
-                  <Menu.Item
-                    key={idx}
-                    className="p-1.5 w-full rounded border hover:bg-zinc-800 hover:border-zinc-700 border-zinc-900 cursor-pointer mr-24 transition-colors duration-200"
-                  >
-                    {i.name}{' '}
-                  </Menu.Item>
-                ))}
+                {Items.map((i, idx) => {
+                  const Icon = i.icon
+
+                  return (
+                    <Menu.Item
+                      key={idx}
+                      className="p-1.5 w-full rounded border hover:bg-zinc-800 hover:border-zinc-700 border-zinc-900 cursor-pointer flex items-center gap-4 mr-24 transition-colors duration-200"
+                    >
+                      <Icon className="text-text" size={16} />
+                      {i.name}{' '}
+                    </Menu.Item>
+                  )
+                })}
               </Menu.Popup>
             </Menu.Positioner>
           </Menu.Portal>
@@ -105,14 +120,19 @@ export default function Header() {
               align="start"
             >
               <Menu.Popup>
-                {Items.map((i, idx) => (
-                  <Menu.Item
-                    key={idx}
-                    className="p-1.5 w-full rounded border hover:bg-zinc-800 hover:border-zinc-700 border-zinc-900 cursor-pointer mr-24 transition-colors duration-200"
-                  >
-                    {i.name}{' '}
-                  </Menu.Item>
-                ))}
+                {Items.map((i, idx) => {
+                  const Icon = i.icon
+
+                  return (
+                    <Menu.Item
+                      key={idx}
+                      className="p-1.5 w-full rounded border hover:bg-zinc-800 hover:border-zinc-700 border-zinc-900 cursor-pointer flex items-center gap-4 mr-24 transition-colors duration-200"
+                    >
+                      <Icon className="text-text" size={16} />
+                      {i.name}{' '}
+                    </Menu.Item>
+                  )
+                })}
               </Menu.Popup>
             </Menu.Positioner>
           </Menu.Portal>

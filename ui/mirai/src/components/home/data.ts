@@ -74,3 +74,21 @@ export const STATS: StatCard[] = [
     linkLabel: 'Benchmarks',
   },
 ]
+
+export const ModelStats = [
+  {
+    description: 'Time to first token, s ',
+    token: 1.032,
+    extra: 0.024,
+  },
+  {
+    description: 'Prompt, t/s',
+    token: 1490.658,
+    extra: 34.871,
+  },
+  {
+    description: 'Generate, t/s ',
+    token: 121.082,
+    extra: 1.077,
+  },
+]

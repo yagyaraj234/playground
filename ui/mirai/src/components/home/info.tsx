@@ -8,6 +8,7 @@ import {
   IconEaseInOut,
 } from '@tabler/icons-react'
 import { useState } from 'react'
+import Container from '../container'
 
 const AccordionItems = [
   {
@@ -137,7 +138,7 @@ function InfoAccordion() {
 
 export default function Info() {
   return (
-    <div className="px-4 lg:px-8 my-16">
+    <Container className=" my-16">
       <h3 className="text-4xl sm:text-5xl font-medium tracking-normal pb-12">
         Convert, optimize, distribute <br />{' '}
         <span className="text-white/80">
@@ -158,6 +159,6 @@ export default function Info() {
           <InfoAccordion />
         </div>
       </div>
-    </div>
+    </Container>
   )
 }

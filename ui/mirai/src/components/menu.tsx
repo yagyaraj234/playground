@@ -12,16 +12,16 @@ export default function DropDownMenu<T>(props: DropDownMenu<T>) {
   return (
     <Menu.Root>
       <Menu.Trigger
-        className={` flex gap-4 items-center border font-inter text-zinc-200 border-zinc-800  py-2`}
+        className={` rounded flex gap-4 items-center border font-inter text-zinc-200 border-zinc-800  py-2`}
       >
         <span className="px-4 flex items-center gap-4">
-          {props.selectedItem} <IconChevronDown size={20} />
+          {props.selectedItem} <IconChevronDown size={16} />
         </span>
       </Menu.Trigger>
-      <Menu.Portal className={`bg-zinc-800`}>
+      <Menu.Portal className={`bg-zinc-800 rounded`}>
         <Menu.Backdrop />
         <Menu.Positioner className={``} sideOffset={8} side="bottom">
-          <Menu.Popup className={`bg-zinc-900 border border-zinc-700`}>
+          <Menu.Popup className={`bg-zinc-900 border border-zinc-700 rounded`}>
             {props.data.map((item, idx) => {
               return (
                 <Menu.Item

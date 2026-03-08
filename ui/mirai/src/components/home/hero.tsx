@@ -1,8 +1,9 @@
 import { IconArrowNarrowRight } from '@tabler/icons-react'
+import Container from '../container'
 
 export default function Hero() {
   return (
-    <main className="p-4 lg:px-8 select-none">
+    <Container className="max-sm:p-4 select-none">
       <h1 className="text-3xl sm:text-5xl font-bold text-white sm:mt-20 mt-12 leading-relaxed tracking-normal">
         Your models. Every Apple device.
       </h1>
@@ -21,6 +22,6 @@ export default function Hero() {
       <div className="border border-zinc-800 p-1.5">
         <img src="./images/hero.png" height={'100%'} width={'100%'} />
       </div>
-    </main>
+    </Container>
   )
 }

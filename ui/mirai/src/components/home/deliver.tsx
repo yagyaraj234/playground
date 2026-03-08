@@ -1,32 +1,41 @@
 import { useState } from 'react'
 import DropDownMenu from '../menu'
+import { IconArrowRight } from '@tabler/icons-react'
+import { Link } from '@tanstack/react-router'
+import Container from '../container'
+import { STATS, DataSet, type StatCard } from './data'
 
-type DataSetType = {
-  Models: string[]
-  Chips: string[]
-}
+function StatsSection({ stats }: { stats: StatCard[] }) {
+  return (
+    <>
+      {stats.map((item) => (
+        <div key={item.id} className="flex flex-col gap-4">
+          <div className="flex items-baseline gap-2">
+            <span className="text-5xl font-semibold text-cyan-400">
+              {item.value}
+            </span>
+            {item.unit && (
+              <span className="text-gray-400 text-lg">{item.unit}</span>
+            )}
+          </div>
 
-const DataSet: DataSetType = {
-  Models: [
-    'Llama-3.2-1B-Instruct',
-    'LFM2-1.2B',
-    'LFM2-1.2B-4bit',
-    'LFM2-350M-4bit',
-    'Llama-3.2-3B-Instruct-AWQ',
-    'Qwen3-0.6B',
-  ],
-  Chips: [
-    'M1 Max',
-    'M1 Ultra',
-    'M2',
-    'M2 Max',
-    'M3 Max',
-    'M3 Ultra',
-    'M4 Max',
-    'M5',
-    'iPhone 16 Pro Max',
-    'iPhone 17 Pro Max',
-  ],
+          <h3 className="text-white text-lg font-medium w-3/4">{item.title}</h3>
+
+          <p className="text-gray-400 text-sm leading-relaxed w-3/4">
+            {item.description}
+          </p>
+
+          <Link
+            to={item.linkLabel}
+            className="text-cyan-400 text-sm flex items-center gap-1 hover:underline"
+          >
+            {item.linkLabel}
+            <IconArrowRight className="-rotate-45" size={16} />
+          </Link>
+        </div>
+      ))}
+    </>
+  )
 }
 
 export default function Deliverables() {
@@ -45,13 +54,13 @@ export default function Deliverables() {
     setSelectedItem((p) => ({ ...p, Chip: item }))
   }
   return (
-    <div className="px-4 lg:px-8 my-16">
+    <Container className="max-sm:px-4 my-16">
       <h3 className="text-4xl sm:text-5xl font-medium tracking-normal pb-12">
         What Apple Silicon <br />{' '}
         <span className="text-white/80">delivers today with Mirai.</span>
       </h3>
 
-      <div className="border border-zinc-800 bg-zinc-900 p-8">
+      <div className="border border-zinc-800 bg-zinc-900/50 p-8">
         <div className="flex items-center justify-between">
           <div className="text-2xl font-semibold">Benchmarks</div>
           <div className="flex gap-8 items-center">
@@ -62,7 +71,7 @@ export default function Deliverables() {
               renderItem={(item: string) => <button>{item}</button>}
             />
             <DropDownMenu
-              onSelect={handleChangeModel}
+              onSelect={handleChangeChip}
               data={DataSet['Chips']}
               selectedItem={DataSet['Chips'][0]}
               renderItem={(item: string) => <button>{item}</button>}
@@ -75,6 +84,10 @@ export default function Deliverables() {
           <div>Measurements were done with real hardware</div>
         </div>
       </div>
-    </div>
+
+      <div className="border border-zinc-800 bg-zinc-900/50 p-8 grid grid-cols-4 gap-x-6 my-12">
+        <StatsSection stats={STATS} />
+      </div>
+    </Container>
   )
 }

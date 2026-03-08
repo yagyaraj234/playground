@@ -33,7 +33,7 @@ export default function DropDownMenu<T>(props: DropDownMenu<T>) {
         <Menu.Positioner className={``} sideOffset={8} side="bottom">
           <Menu.Popup
             className={cn(
-              `bg-zinc-900 border border-zinc-700 rounded `,
+              `bg-zinc-900 border border-zinc-700 rounded py-1 `,
               props.className?.popup,
             )}
           >

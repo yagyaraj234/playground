@@ -3,7 +3,7 @@ import DropDownMenu from '../menu'
 import { IconArrowRight } from '@tabler/icons-react'
 import { Link } from '@tanstack/react-router'
 import Container from '../container'
-import { STATS, DataSet, type StatCard } from './data'
+import { STATS, DataSet, type StatCard, ModelStats } from './data'
 
 function StatsSection({ stats }: { stats: StatCard[] }) {
   return (
@@ -61,7 +61,7 @@ export default function Deliverables() {
       </h3>
 
       <div className="border border-zinc-800 bg-zinc-900/50 p-8">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between pb-8">
           <div className="text-2xl font-semibold">Benchmarks</div>
           <div className="flex gap-8 items-center">
             <DropDownMenu
@@ -81,10 +81,23 @@ export default function Deliverables() {
             />
           </div>
         </div>
-
-        <div className="flex items-center justify-between py-4 my-3 border-y border-zinc-800">
+        <div className="flex items-center justify-between py-4  border-y border-zinc-800">
           <div>{selectedItem['Model']}</div>
           <div>Measurements were done with real hardware</div>
+        </div>
+
+        <div className="grid sm:grid-cols-3 grid-cols-1 py-4 ">
+          {ModelStats?.map((item, idx) => (
+            <div className="flex flex-col gap-3" key={idx}>
+              <div className="text-zinc-500 text-lg">{item.description}</div>
+              <div className="flex gap-2 items-end">
+                <div className="text-3xl font-semibold text-cyan-400 font-sans">
+                  {item.token}
+                </div>
+                <span className="text-base text-zinc-500">± {item.extra}</span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

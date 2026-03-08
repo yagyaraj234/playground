@@ -67,13 +67,16 @@ export default function Deliverables() {
             <DropDownMenu
               onSelect={handleChangeModel}
               data={DataSet['Models']}
-              selectedItem={DataSet['Models'][0]}
+              selectedItem={selectedItem['Model']}
               renderItem={(item: string) => <button>{item}</button>}
+              className={{
+                trigger: 'min-w-60 justify-center',
+              }}
             />
             <DropDownMenu
               onSelect={handleChangeChip}
               data={DataSet['Chips']}
-              selectedItem={DataSet['Chips'][0]}
+              selectedItem={selectedItem['Chip']}
               renderItem={(item: string) => <button>{item}</button>}
             />
           </div>

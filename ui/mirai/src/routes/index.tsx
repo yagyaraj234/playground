@@ -1,3 +1,4 @@
+import Deliverables from '#/components/home/deliver'
 import Header from '#/components/home/header'
 import Hero from '#/components/home/hero'
 import Info from '#/components/home/info'
@@ -11,6 +12,7 @@ function App() {
       <Header />
       <Hero />
       <Info />
+      <Deliverables />
     </main>
   )
 }

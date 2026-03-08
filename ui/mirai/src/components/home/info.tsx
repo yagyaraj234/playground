@@ -138,7 +138,7 @@ function InfoAccordion() {
 export default function Info() {
   return (
     <div className="px-4 lg:px-8 my-16">
-      <h3 className="text-4xl sm:text-5xl font-medium leading-normal">
+      <h3 className="text-4xl sm:text-5xl font-medium tracking-normal pb-12">
         Convert, optimize, distribute <br />{' '}
         <span className="text-white/80">
           & run your models on Apple devices.

@@ -3,7 +3,7 @@ import "./App.css";
 import List from "./component/list";
 
 function App() {
-  const [count, setCount] = useState(200);
+  const [count, setCount] = useState(20000);
 
   return (
     <>

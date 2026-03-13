@@ -1,81 +1,107 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  useEffect,
+  useEffectEvent,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 
-export default function VirtualizedList({ children }: { children: ReactNode }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [elementHeight, setElementHeight] = useState(0);
-  const [totalElementInView, setTotalElementInView] = useState(10);
+type VirtualizedListProps<T> = {
+  data: T[];
+  height: number;
+  render: (item: T, index: number) => ReactNode;
+};
 
-  //   const { height, width } = ref.current?.getBoundingClientRect() || {
-  //     height: 0,
-  //     width: 0,
-  //   };
+export default function VirtualizedList<T>({
+  data,
+  render,
+}: VirtualizedListProps<T>) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const measureRef = useRef<HTMLDivElement>(null);
 
-  let height = 0;
-  let width = 0;
+  const [rowHeight, setRowHeight] = useState<number | null>(38);
+  const [range, setRange] = useState({ start: 0, end: 10 });
 
+  // Measure row height
   useEffect(() => {
-    if (!ref.current) {
-      return;
+    if (!measureRef.current) return;
+
+    const h = measureRef.current.getBoundingClientRect().height;
+    if (h > 0) {
+      console.log("setting rowHeight", h);
+      setRowHeight(38);
     }
-    height = ref.current.offsetHeight;
-    width = ref.current.offsetWidth;
-
-    const elementHeight = 0;
-
-    //   get the first height of first child from ref
-    const firstChildOffsetTop = ref.current.children[0]?.offsetTop || 0;
-    const secondChildOffsetTop = ref.current.children[1]?.offsetTop || 0;
-
-    const totalGap = secondChildOffsetTop - firstChildOffsetTop;
-    if (totalGap > 0) {
-      setElementHeight(totalGap);
-
-      const totalElementInView = height / totalGap;
-      setTotalElementInView(Math.ceil(totalElementInView));
-    }
-
-    // add listener for scroll event
-    ref.current.addEventListener("scroll", () => {
-      const scrollTop = ref.current?.scrollTop || 0;
-      const firstVisibleIndex = Math.floor(scrollTop / totalGap);
-      const lastVisibleIndex = firstVisibleIndex + totalElementInView;
-      console.log({
-        firstVisibleIndex,
-        lastVisibleIndex,
-        scrollTop,
-        elementHeight,
-      });
-
-      // now if you have firstVisibleIndex and lastVisibleIndex
-      // you can render the elements between these indexes
-      // and remove the elements which are not visible
-      if (!children) {
-        return;
-      }
-      const visibleChildren = children.slice(
-        firstVisibleIndex,
-        lastVisibleIndex,
-      );
-    });
-
-    return () => {
-      ref.current?.removeEventListener("scroll", () => {});
-    };
   }, []);
 
-  console.log({
-    totalElementInView,
-    elementHeight,
-  });
+  // Attach scroll logic after height known
+  useEffect(() => {
+    if (!containerRef.current || !rowHeight) return;
+
+    const el = containerRef.current;
+    const height = el.clientHeight;
+    const itemsInView = Math.ceil(height / rowHeight);
+
+    const handleScroll = () => {
+      const scrollTop = el.scrollTop;
+
+      const start = Math.floor(scrollTop / 38);
+      console.log("start", start);
+      const end = start + itemsInView;
+
+      setRange({ start, end });
+    };
+
+    el.addEventListener("scroll", handleScroll);
+
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, [rowHeight]);
+
+  // Before height is known render a small batch
+  if (!rowHeight) {
+    return (
+      <div ref={containerRef} style={{ overflow: "auto" }}>
+        {data.slice(0, 10).map((item, i) => (
+          <div key={i} ref={i === 0 ? measureRef : undefined}>
+            {render(item, i)}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  const visibleItems = data.slice(range.start, range.end);
+
+  console.log(
+    "total render",
+    visibleItems.length,
+    "range",
+    range.start,
+    range.end,
+  );
 
   return (
-    <>
-      <div>
-        {height}px {width}px
+    <div
+      ref={containerRef}
+      style={{
+        overflowY: "auto",
+        position: "relative",
+      }}
+      className="container"
+    >
+      <div
+        style={{
+          height: data.length * rowHeight,
+          position: "relative",
+        }}
+      >
+        <div
+          style={{
+            transform: `translateY(${range.start * rowHeight}px)`,
+          }}
+        >
+          {visibleItems.map((item, i) => render(item, range.start + i))}
+        </div>
       </div>
-      <div className="container" ref={ref}>
-        {children}
-      </div>
-    </>
+    </div>
   );
 }

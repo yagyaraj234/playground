@@ -8,7 +8,8 @@ export default function List({ length }: { length: number }) {
           id: i + 1,
           name: `User ${i + 1}`,
         }))}
-        render={($item, idx, list) => {
+        minHeight={500}
+        renderItem={($item, idx, list) => {
           return (
             <div
               key={$item.id}

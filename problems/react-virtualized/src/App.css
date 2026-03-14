@@ -20,8 +20,8 @@
 /* virtualized list */
 
 .container {
-  height: 500px;
-  max-height: 400px;
+  height: 600px;
+  max-height: 300px;
   overflow-y: auto;
   padding: 16px;
   background-color: aliceblue;

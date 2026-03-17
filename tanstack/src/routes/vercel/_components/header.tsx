@@ -1,30 +1,46 @@
+import { IconChevronDown } from "@tabler/icons-react";
+import { Link } from "@tanstack/react-router";
 import Button from "./button";
 
 export default function Header() {
   return (
     <div className="flex justify-between items-center  py-4 px-6 ">
       <div className="flex gap-4 items-center">
-        <img
-          src="https://vercel.com/vc-ap-vercel-marketing/_next/static/media/vercel-logotype-dark.2944928d.svg?dpl=dpl_4S3N8kchpm6mKC1mzYCfG5fczfZ8"
-          alt="vercel log"
-          className="w-32 h-auto"
-        />
+        <Link to="/vercel">
+          <img
+            src="https://vercel.com/vc-ap-vercel-marketing/_next/static/media/vercel-logotype-dark.2944928d.svg?dpl=dpl_4S3N8kchpm6mKC1mzYCfG5fczfZ8"
+            alt="vercel log"
+            className="w-32 h-auto"
+          />
+        </Link>
 
         <ul className="flex gap-2 items-center">
-          <li className="text-zinc-400 text-base font-light hover:text-white hover:bg-zinc-700 px-4 py-1.5 rounded-full ease-in-out transition-all duration-300 cursor-pointer ">
+          <li className=" group text-zinc-400 flex items-center gap-1 text-base font-light hover:text-white hover:bg-zinc-700 px-4 py-1.5 rounded-full ease-in-out transition-all duration-300 cursor-pointer ">
             Products
+            <IconChevronDown
+              size={16}
+              className="group-hover:rotate-180 transition-all duration-300 ease-in-out"
+            />
           </li>
-          <li className="text-zinc-400 text-base font-light hover:text-white hover:bg-zinc-700 px-4 py-1.5 rounded-full ease-in-out transition-all duration-300 cursor-pointer ">
+          <li className="group text-zinc-400 flex items-center gap-1 text-base font-light hover:text-white hover:bg-zinc-700 px-4 py-1.5 rounded-full ease-in-out transition-all duration-300 cursor-pointer ">
             Resources
+            <IconChevronDown
+              size={16}
+              className="group-hover:rotate-180 transition-all duration-300 ease-in-out"
+            />
           </li>
-          <li className="text-zinc-400 text-base font-light hover:text-white hover:bg-zinc-700 px-4 py-1.5 rounded-full ease-in-out transition-all duration-300 cursor-pointer ">
+          <li className="group text-zinc-400 flex items-center gap-1 text-base font-light hover:text-white hover:bg-zinc-700 px-4 py-1.5 rounded-full ease-in-out transition-all duration-300 cursor-pointer ">
             Solution
+            <IconChevronDown
+              size={16}
+              className="group-hover:rotate-180 transition-all duration-300 ease-in-out"
+            />
           </li>
           <li className="text-zinc-400 text-base font-light hover:text-white hover:bg-zinc-700 px-4 py-1.5 rounded-full ease-in-out transition-all duration-300 cursor-pointer ">
-            Pricing
+            <Link to="/vercel/pricing">Pricing</Link>
           </li>
           <li className="text-zinc-400 text-base font-light hover:text-white hover:bg-zinc-700 px-4 py-1.5 rounded-full ease-in-out transition-all duration-300 cursor-pointer ">
-            Docs
+            <Link to="/vercel/docs">Docs</Link>
           </li>
         </ul>
       </div>

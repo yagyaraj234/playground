@@ -1,10 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import Header from "./_components/header";
 
-export const Route = createFileRoute("/vercel/")({
+export const Route = createFileRoute("/vercel/docs")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  return <>Home</>;
+  return <div>Hello "/vercel/docs"!</div>;
 }

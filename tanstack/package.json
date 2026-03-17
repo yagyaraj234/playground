@@ -9,6 +9,7 @@
     "start": "vite"
   },
   "dependencies": {
+    "@tabler/icons-react": "^3.40.0",
     "@tailwindcss/vite": "^4.2.1",
     "@tanstack/react-router": "^1.167.4",
     "@tanstack/react-router-devtools": "^1.166.9",

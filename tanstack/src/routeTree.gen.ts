@@ -13,6 +13,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as VercelRouteRouteImport } from './routes/vercel/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VercelIndexRouteImport } from './routes/vercel/index'
+import { Route as StripeIndexRouteImport } from './routes/stripe/index'
 import { Route as VercelPricingRouteImport } from './routes/vercel/pricing'
 import { Route as VercelDocsRouteImport } from './routes/vercel/docs'
 
@@ -36,6 +37,11 @@ const VercelIndexRoute = VercelIndexRouteImport.update({
   path: '/',
   getParentRoute: () => VercelRouteRoute,
 } as any)
+const StripeIndexRoute = StripeIndexRouteImport.update({
+  id: '/stripe/',
+  path: '/stripe/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VercelPricingRoute = VercelPricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/vercel/docs': typeof VercelDocsRoute
   '/vercel/pricing': typeof VercelPricingRoute
+  '/stripe/': typeof StripeIndexRoute
   '/vercel/': typeof VercelIndexRoute
 }
 export interface FileRoutesByTo {
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/vercel/docs': typeof VercelDocsRoute
   '/vercel/pricing': typeof VercelPricingRoute
+  '/stripe': typeof StripeIndexRoute
   '/vercel': typeof VercelIndexRoute
 }
 export interface FileRoutesById {
@@ -69,6 +77,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/vercel/docs': typeof VercelDocsRoute
   '/vercel/pricing': typeof VercelPricingRoute
+  '/stripe/': typeof StripeIndexRoute
   '/vercel/': typeof VercelIndexRoute
 }
 export interface FileRouteTypes {
@@ -79,9 +88,16 @@ export interface FileRouteTypes {
     | '/about'
     | '/vercel/docs'
     | '/vercel/pricing'
+    | '/stripe/'
     | '/vercel/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/vercel/docs' | '/vercel/pricing' | '/vercel'
+  to:
+    | '/'
+    | '/about'
+    | '/vercel/docs'
+    | '/vercel/pricing'
+    | '/stripe'
+    | '/vercel'
   id:
     | '__root__'
     | '/'
@@ -89,6 +105,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/vercel/docs'
     | '/vercel/pricing'
+    | '/stripe/'
     | '/vercel/'
   fileRoutesById: FileRoutesById
 }
@@ -96,6 +113,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   VercelRouteRoute: typeof VercelRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
+  StripeIndexRoute: typeof StripeIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -127,6 +145,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/vercel/'
       preLoaderRoute: typeof VercelIndexRouteImport
       parentRoute: typeof VercelRouteRoute
+    }
+    '/stripe/': {
+      id: '/stripe/'
+      path: '/stripe'
+      fullPath: '/stripe/'
+      preLoaderRoute: typeof StripeIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/vercel/pricing': {
       id: '/vercel/pricing'
@@ -165,6 +190,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   VercelRouteRoute: VercelRouteRouteWithChildren,
   AboutRoute: AboutRoute,
+  StripeIndexRoute: StripeIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

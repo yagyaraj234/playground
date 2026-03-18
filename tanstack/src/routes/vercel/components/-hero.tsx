@@ -5,7 +5,7 @@ import {
   IconTerminal,
   IconWorld,
 } from "@tabler/icons-react";
-import Button from "./button";
+import Button from "./-button";
 
 export default function Hero() {
   return (

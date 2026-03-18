@@ -7,6 +7,6 @@ export default function Button({
   children: React.ReactNode;
   className?: string;
 }) {
-  const baseClasses = "bg-white text-black px-4 py-2 rounded";
+  const baseClasses = "bg-white text-black px-4 py-2 rounded cursor-pointer";
   return <button className={cn(baseClasses, className)}>{children}</button>;
 }

@@ -9,7 +9,7 @@ export default function Header() {
         <div className="flex gap-4 items-center">
           <Link to="/vercel">
             <img
-              src="https://vercel.com/vc-ap-vercel-marketing/_next/static/media/vercel-logotype-dark.2944928d.svg?dpl=dpl_4S3N8kchpm6mKC1mzYCfG5fczfZ8"
+              src="https://vercel.com/vc-ap-vercel-marketing/_next/static/media/vercel-logotype-dark.07vwhx6.mrfcf.svg?dpl=dpl_CvSsnphmbHzu7KApuWKb39KATisk"
               alt="vercel log"
               className="w-32 h-auto"
             />

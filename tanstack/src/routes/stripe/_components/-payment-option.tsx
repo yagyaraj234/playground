@@ -13,7 +13,7 @@ export default function PaymentOption({
 }: BnplProps) {
   return (
     <div
-      className={`text-zinc-600 text-sm flex gap-2 items-center ${className}`}
+      className={`text-zinc-600 text-sm flex gap-2 items-center ${bnpl && "-mt-1"} ${className}`}
     >
       <img src={imagesrc} alt={title} />
       <div className="flex flex-col gap-0">

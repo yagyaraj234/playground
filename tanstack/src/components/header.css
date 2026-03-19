@@ -1,0 +1,90 @@
+.userimage {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+header {
+  padding: 16px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+nav a {
+  text-decoration: none;
+  position: relative;
+}
+
+nav > a::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0; /* starts hidden */
+  height: 2px;
+  background-color: mediumblue;
+  transition: width 0.3s ease;
+}
+
+nav > a:hover::after {
+  width: 100%; /* expands to full width on hover */
+}
+
+button {
+  background-color: mediumblue;
+  padding: 8px 16px;
+  min-width: 100px;
+  text-align: center;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: color-mix(in srgb, mediumblue 80%, transparent);
+  animation: ease-in;
+  transition-duration: 300ms;
+}
+
+#menu {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  #menu {
+    display: block;
+    cursor: pointer;
+  }
+
+  #desktop-menu {
+    display: none;
+  }
+
+  /* always in DOM, starts closed */
+  #mobile-menu {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition:
+      max-height 0.3s ease,
+      opacity 0.3s ease;
+  }
+
+  /* open state — toggle this class with JS */
+  #mobile-menu.open {
+    max-height: fit-content; /* enough to fit your links */
+    opacity: 1;
+  }
+}
+
+@media (min-width: 641px) {
+  #mobile-menu {
+    display: none;
+  }
+}

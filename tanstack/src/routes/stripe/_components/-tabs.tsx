@@ -1,50 +1,13 @@
 import { IconChevronDown } from "@tabler/icons-react";
 import React, { useEffect } from "react";
-import { cn } from "../../../lib/utils";
-import Bnpl from "./-payment-option";
+import { CardContainer, CardContent } from "./-card";
 import PayButton from "./-pay-button";
 import PaymentOption from "./-payment-option";
-const tabs = ["United States", "Germany", "Mexico", "China", "United Kingdom"];
-
-function CardContainer({
-  children,
-  className,
-  ref,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  ref?: React.Ref<HTMLDivElement>;
-}) {
-  return (
-    <div
-      className={cn(
-        "ring-1  ring-zinc-200 rounded-lg  divide-y divide-zinc-200",
-        className,
-      )}
-      ref={ref}
-    >
-      {children}
-    </div>
-  );
-}
-
-function CardContent({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <div className={cn("flex gap-2 items-center justify-start p-4", className)}>
-      {children}
-    </div>
-  );
-}
+const tabs = ["United States", "Germany", "United Kingdom", "China", "Mexico"];
 
 function GermanyCard() {
   return (
-    <CardContainer>
+    <CardContainer className="h-fit">
       <div className="flex flex-col p-4">
         <div className=" text-zinc-600 text-sm flex gap-2 items-center">
           <img src="/kalarna.svg" alt="kalarna" />
@@ -79,12 +42,10 @@ function GermanyCard() {
         </div>
       </div>
       <CardContent>
-        <img src="/sepa.svg" alt="sepa" />
-        <p className="font-medium text-base text-zinc-800"> SEPA-Lastschrift</p>
+        <PaymentOption imagesrc="/sepa.svg" title="SEPA-Lastschrift" />
       </CardContent>
       <CardContent>
-        <img src="/paypal.svg" alt="paypal" />
-        <p className="font-medium text-base text-zinc-800"> Paypal</p>
+        <PaymentOption imagesrc="/paypal.svg" title="Paypal" />
       </CardContent>
     </CardContainer>
   );
@@ -92,14 +53,16 @@ function GermanyCard() {
 
 function Mexico() {
   return (
-    <>
+    <div>
       <CardContainer>
         <div className="flex flex-col p-4">
           <div className=" text-zinc-600 text-sm flex gap-2 items-center">
-            <img src="/card.svg" alt="kalarna" />
+            <img src="/card.svg" alt="kalarna" className=" opacity-60" />
             <div className="flex flex-col gap-0">
-              <p className="font-medium text-base text-zinc-800">Klarna</p>
-              <p className="text-xs">Jetzt kaufen, später bezahlen</p>
+              <p className="font-medium text-base text-zinc-500">Klarna</p>
+              <p className="text-xs text-zinc-400">
+                Jetzt kaufen, später bezahlen
+              </p>
             </div>
           </div>
           <div className="flex flex-col">
@@ -121,19 +84,18 @@ function Mexico() {
           </div>
         </div>
         <CardContent>
-          <img src="/bank.svg" alt="bank" />
-          <p className="font-medium text-base text-zinc-800">
-            Transferencias bancarias
-          </p>
+          <PaymentOption
+            imagesrc="/bank.svg"
+            title=" Transferencias bancarias"
+          />
         </CardContent>
         <CardContent>
-          <img src="/oxxo.svg" alt="oxxo" />
-          <p className="font-medium text-base text-zinc-800">OXXO</p>
+          <PaymentOption imagesrc="/oxxo.svg" title="OXXO" />
         </CardContent>
       </CardContainer>
 
       <PayButton>Pagar MXN 3,500.00</PayButton>
-    </>
+    </div>
   );
 }
 
@@ -144,11 +106,11 @@ function UnitedStateCard() {
       <div className="ring-1  w-full ring-zinc-200 rounded-lg  divide-y divide-zinc-200">
         <div className="p-4 text-zinc-600 text-sm flex gap-2 items-center">
           {" "}
-          <img src="/card.svg" alt="card" />
+          <img src="/card.svg" alt="card" className=" opacity-60" />
           Card
         </div>
         <div className="text-sm p-4 py-3 flex  gap-2 text-zinc-700 ">
-          <PaymentOption imagesrc="/afterpay.svg" title="Afterpay" />
+          <PaymentOption imagesrc="/afterpay.svg" title="Afterpay" bnpl />
         </div>
         <div className="text-sm p-4 text-zinc-700 ">
           <PaymentOption
@@ -186,13 +148,13 @@ function UnitedStateCard() {
 
 function UnitedKingdom() {
   return (
-    <>
+    <div>
       <CardContainer>
         <div className="flex flex-col p-4">
           <div className=" text-zinc-600 text-sm flex gap-2 items-center">
-            <img src="/card.svg" alt="kalarna" />
+            <img src="/card.svg" alt="card" className=" opacity-60" />
             <div className="flex flex-col gap-0">
-              <p className="font-medium text-base text-zinc-800">Card</p>
+              <p className="font-medium text-base text-zinc-500">Card</p>
             </div>
           </div>
           <div className="flex flex-col">
@@ -230,19 +192,19 @@ function UnitedKingdom() {
       </CardContainer>
 
       <PayButton>Pay £235.00</PayButton>
-    </>
+    </div>
   );
 }
 
 function China() {
   return (
-    <>
+    <div>
       <CardContainer>
         <div className="flex flex-col p-4">
           <div className=" text-zinc-600 text-sm flex gap-2 items-center">
-            <img src="/card.svg" alt="kalarna" />
+            <img src="/card.svg" alt="card" className=" opacity-60" />
             <div className="flex flex-col gap-0">
-              <p className="font-medium text-base text-zinc-800">银行卡</p>
+              <p className="font-medium text-base text-zinc-500">银行卡</p>
             </div>
           </div>
           <div className="flex flex-col">
@@ -273,31 +235,54 @@ function China() {
       </CardContainer>
 
       <PayButton>支付 ¥450.00</PayButton>
-    </>
+    </div>
   );
 }
 
 export default function StripePaymentTabs() {
-  const [activeTab, setActiveTab] = React.useState(tabs[1]);
+  const [activeTab, setActiveTab] = React.useState(tabs[0]);
+  const containerRef = React.useRef<HTMLDivElement>(null);
 
-  //   useEffect(() => {
-  //     const intervalId = setInterval(() => {
-  //       const index = tabs.indexOf(activeTab);
-  //       setActiveTab(tabs[(index + 1) % tabs.length]);
-  //       lastActiveItemRef.current = tabs[(index + 1) % tabs.length];
-  //     }, 3000);
+  // task: add to tabs to move from right to left when options are changing also automatically change the active tab
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      const index = tabs.indexOf(activeTab);
+      setActiveTab(tabs[(index + 1) % tabs.length]);
+      if (index === tabs.length - 1) {
+        setActiveTab(tabs[0]);
+        containerRef.current?.scrollTo({
+          left: 0,
+          behavior: "smooth",
+        });
+      } else {
+        // scroll container to 600px + 24px
+        containerRef.current?.scrollTo({
+          left: (index + 1) * 696,
+          behavior: "smooth",
+        });
+      }
+    }, 6000);
 
-  //     return () => clearInterval(intervalId);
-  //   }, []);
+    return () => clearInterval(intervalId);
+  }, [activeTab]);
+
+  function handleItemClick(itemIndex: number) {
+    setActiveTab(tabs[itemIndex]);
+    containerRef?.current.scrollTo({
+      left: itemIndex * 696,
+      behavior: "smooth",
+    });
+  }
+
   return (
     <div className="flex flex-col gap-4 w-screen mx-auto">
-      <div className="w-4/6 max-w-4/6 min-w-4/6">
+      <div className="w-3/6 max-w-3/6 min-w-3/6  mx-auto">
         <div className="flex gap-4 items-center w-full my-6">
           {tabs.map((tab, idx) => (
             <div
-              className={` text-black px-3 py-1.5 rounded-full ${tab === activeTab ? "bg-purple-500 text-white" : "bg-white"}`}
+              className={` text-black px-3 py-1.5 rounded-full cursor-pointer ${tab === activeTab ? "bg-purple-500 text-white" : "bg-white"}`}
               key={tab}
-              onClick={() => setActiveTab(tabs[idx])}
+              onClick={() => handleItemClick(idx)}
             >
               {tab}
             </div>
@@ -305,11 +290,15 @@ export default function StripePaymentTabs() {
         </div>
 
         <div
-          className="bg-white  max-h-[460px] min-h-[460px] drop-shadow-md p-8 ring-1 ring-zinc-200 rounded-lg w-full
+          className="transition-all duration-500 ease-in bg-white flex gap-24 overflow-x-hidden no-scrollbar max-h-[420px] min-h-[420px] drop-shadow-md p-5 ring-1 ring-zinc-200 rounded-lg w-full
         "
+          ref={containerRef}
         >
+          <UnitedStateCard />
+          <GermanyCard />
+          <UnitedKingdom />
           <China />
-          {/* <UnitedStateCard /> */}
+          <Mexico />
         </div>
       </div>
     </div>

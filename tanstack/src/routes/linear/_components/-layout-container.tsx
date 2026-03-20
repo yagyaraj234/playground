@@ -8,7 +8,9 @@ export default function LayoutContainer({
   className?: string;
 }) {
   return (
-    <div className={cn("flex-1 lg:max-w-6xl mx-auto", className)}>
+    <div
+      className={cn("flex-1 lg:max-w-6xl xl:max-w-7xl mx-auto px-4", className)}
+    >
       {children}
     </div>
   );

@@ -3,6 +3,11 @@
 
 @theme {
   --font-inter: "Inter Variable", sans-serif;
+  /* Optional: Set default feature settings for Inter */
+  --font-inter--font-feature-settings: "liga" 1, "calt" 1, "cv11" 1;
+
+  /* Optional: Set default variation settings (like optical size) */
+  --font-inter--font-variation-settings: "opsz" 32;
 }
 
 @layer base {

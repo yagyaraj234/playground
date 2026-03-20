@@ -14,7 +14,8 @@ header {
 nav {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 24px;
+  color: #fff;
 }
 
 nav a {
@@ -28,26 +29,23 @@ nav > a::after {
   bottom: 0;
   left: 0;
   width: 0; /* starts hidden */
-  height: 2px;
-  background-color: mediumblue;
+  height: 1px;
   transition: width 0.3s ease;
+  background-color: antiquewhite;
 }
 
 nav > a:hover::after {
   width: 100%; /* expands to full width on hover */
 }
 
-button {
-  background-color: mediumblue;
+#singin {
   padding: 8px 16px;
   min-width: 100px;
   text-align: center;
-  color: white;
   border-radius: 8px;
   cursor: pointer;
 }
-button:hover {
-  background-color: color-mix(in srgb, mediumblue 80%, transparent);
+#singin:hover {
   animation: ease-in;
   transition-duration: 300ms;
 }

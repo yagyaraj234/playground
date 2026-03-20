@@ -8,9 +8,8 @@ export const Route = createFileRoute("/vercel/")({
 
 function RouteComponent() {
   return (
-    <>
+    <main>
       <Hero />
-      <Footer />
-    </>
+    </main>
   );
 }

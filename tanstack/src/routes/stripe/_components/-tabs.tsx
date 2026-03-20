@@ -268,6 +268,7 @@ export default function StripePaymentTabs() {
 
   function handleItemClick(itemIndex: number) {
     setActiveTab(tabs[itemIndex]);
+    // @ts-ignore
     containerRef?.current.scrollTo({
       left: itemIndex * 696,
       behavior: "smooth",
@@ -276,7 +277,7 @@ export default function StripePaymentTabs() {
 
   return (
     <div className="flex flex-col gap-4 w-screen mx-auto">
-      <div className="w-3/6 max-w-3/6 min-w-3/6  mx-auto">
+      <div className="w-[640px] max-w-[640px] min-w-[640px]  mx-auto">
         <div className="flex gap-4 items-center w-full my-6">
           {tabs.map((tab, idx) => (
             <div

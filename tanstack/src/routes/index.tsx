@@ -7,7 +7,7 @@ export const Route = createFileRoute("/")({
 
 function HomeComponent() {
   return (
-    <div className="relative">
+    <div className="relative h-screen w-screen">
       <Header />
     </div>
   );

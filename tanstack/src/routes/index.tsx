@@ -49,7 +49,13 @@ const blocksData = [
   },
   {
     title: "Logo Clouds",
-    badge: "5+",
+          <div className="h-10 w-full bg-zinc-100 rounded border border-zinc-200"></div>
+          </div>
+        </div>
+      </div>
+    ),
+  },
+];
     description:
       "A collection of logo clouds with micro interactions and minimal animations",
     href: "#",

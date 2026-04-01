@@ -194,10 +194,10 @@ async function performQuestionMining(serpAnalysis: any, topic: string) {
       ...page.keyPoints,
       page.title,
       page.h1,
-      ...page.h2s.slice(0, 3),
+      ...page.h2s?.slice(0, 3),
     ])
     .filter((point) => point.length > 0)
-    .slice(0, 20);
+    ?.slice(0, 20);
 
   const { output } = await generateText({
     model: google("gemini-2.5-flash"),

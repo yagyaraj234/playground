@@ -9,11 +9,17 @@ import type {
 import { Output } from "ai";
 import { generateObjectResult } from "../../lib/model.util";
 import { CURRENT_PROVIDER, getCurrentModel } from "../../lib/model-config";
+import {
+  BLOG_WRITING_STYLE_GUIDE,
+  BLOG_FEW_SHOT_EXAMPLES,
+  BLOG_ANTI_SIMILARITY_GUIDE,
+  BLOG_PROHIBITED_PHRASES,
+} from "../../prompts/blog";
 
 export class OutlineGenerator {
   static async generateOutline(
     researchData: ResearchData,
-    userInput: UserInput,               
+    userInput: UserInput,
   ): Promise<BlogOutlineType> {
     const model = await getCurrentModel(CURRENT_PROVIDER);
 
@@ -91,21 +97,21 @@ export class OutlineGenerator {
     // Get top competitor headings
     const topPages = serpAnalysis?.topPages ?? [];
     const topHeadings = topPages
-      .slice(0, 3)
-      .flatMap((page) => [page.h1, ...(page.h2s ?? []).slice(0, 3)])
+      ?.slice(0, 3)
+      .flatMap((page) => [page.h1, ...(page.h2s ?? [])?.slice(0, 3)])
       .filter((h) => h && h.length > 0)
-      .slice(0, 10);
+      ?.slice(0, 10);
 
     // Get gaps and questions
     const gaps = [
-      ...(gapAnalysis?.whatIsMissing ?? []).slice(0, 2),
-      ...(gapAnalysis?.whatIsShallow ?? []).slice(0, 2),
+      ...(gapAnalysis?.whatIsMissing ?? [])?.slice(0, 2),
+      ...(gapAnalysis?.whatIsShallow ?? [])?.slice(0, 2),
     ];
 
     const questions = [
-      ...(questionMining?.beginnerQuestions ?? []).slice(0, 2),
-      ...(questionMining?.whyDoesThisBreak ?? []).slice(0, 2),
-      ...(questionMining?.whenNotToUse ?? []).slice(0, 2),
+      ...(questionMining?.beginnerQuestions ?? [])?.slice(0, 2),
+      ...(questionMining?.whyDoesThisBreak ?? [])?.slice(0, 2),
+      ...(questionMining?.whenNotToUse ?? [])?.slice(0, 2),
     ];
 
     return `
@@ -139,6 +145,15 @@ Target Length: ${userInput.length} words
 
 ${researchSummary}
 
+${BLOG_WRITING_STYLE_GUIDE}
+
+${BLOG_FEW_SHOT_EXAMPLES}
+
+${BLOG_ANTI_SIMILARITY_GUIDE}
+
+Do not use these phrases in headings or descriptions:
+${BLOG_PROHIBITED_PHRASES.map((phrase) => `- ${phrase}`).join("\n")}
+
 REQUIREMENTS:
 1. Create exactly ONE H1 heading (the main title)
 2. Create multiple H2 sections for core concepts
@@ -159,10 +174,14 @@ REQUIREMENTS:
 6. Include internal link suggestions (3-5 related topics)
 7. Include trade-offs or considerations to discuss (2-3 items)
 8. For each section, provide:
-   - Clear title
-   - Brief description of content
-   - Related questions it answers (if applicable)
-   - Whether it should include a code example
+    - Clear title
+    - Brief description of content
+    - Related questions it answers (if applicable)
+    - Whether it should include a code example
+
+9. Every H2 must add a distinct angle, failure mode, trade-off, or debugging path that competitors usually miss.
+10. Avoid generic section titles unless they are truly the best fit for the topic.
+11. Prefer headings that feel specific and useful on their own.
 
 STRUCTURE GUIDELINES:
 - Start with an engaging H1
@@ -170,6 +189,7 @@ STRUCTURE GUIDELINES:
 - Use H3s to break down complex H2s
 - Ensure flow from basic to advanced concepts
 - Include practical examples throughout
+- If competitors all cover the same canonical sections, shift one or more sections toward gaps, caveats, or real-world failure modes.
 - End with actionable takeaways
 
 Generate the outline now:`;

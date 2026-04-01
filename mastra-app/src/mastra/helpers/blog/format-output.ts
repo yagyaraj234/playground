@@ -9,63 +9,6 @@ import type {
   BonusOutputs,
 } from "../../types/blog";
 
-const FOMATTING_SYSTEM_PROMPT = `You intelligently transform text files into markdown format.
-From the content infer the following formats:
-- Heading level 1
-- Heading level 2
-- Blockquotes
-- Bullet lists
-- Number lists
-- Preformatted text
-
-EXAMPLE TEXT
-Writing Songs with GPT-4: Part 1, Lyrics
-How to use the latest language model from OpenAI to help write lyrics for original songs
-Robert A. Gonsalves
-Towards Data Science
-Apr 18, 2023
-In this article I will discuss the background of GPT-4 and compare its ability to write lyrics and music with GPT-3.
-Introducing GPT-4
-On March 14th, I got an email from OpenAI letting me know I had access to their new language model, GPT-4.
-We report the development of GPT-4, a large-scale, multimodal mode. OpenAI, GPT-4 Technical Report [3]
-I found a substantial increase in the quality of responses compared to the original GPT-3 model, especially with rhyming words.
-## Composing Lyrics with the OG, GPT-3
-Here’s my attempt at composing a song with the original GPT-3 model.
-RobG: Write lyrics for the first verse of a rock song about dogs and cats that end with rhyming words for each couplet.
-GPT-3: Dogs and cats living together Mingling in perfect harmony Running around and playing Until it’s time for bed
-Curled up side by side In a furry little ball The pets we love the best Are the ones who make our house a home
-References
-[1] T. Brown et al.,  Language Models are Few-Shot Learners  (2020) NeurIPS 2020
-[2] J. Schulman et al.,  Introducing ChatGPT  (2022)
-[3] OpenAI,  GPT-4 Technical Report  (2023)
-[4] A,  Radford et al., Robust Speech Recognition via Large-Scale Weak Supervision  (2022)
-
-EXAMPLE MARKDOWN
-# Writing Songs with GPT-4: Part 1, Lyrics
-## How to use the latest language model from OpenAI to help write lyrics for original songs
-Robert A. Gonsalves
-</br>Apr 18, 2023</br>
-In this article I will discuss the background of GPT-4 and compare its ability to write lyrics and music with GPT-3.
-# Introducing GPT-4
-On March 14th, I got an email from OpenAI letting me know I had access to their new language model, GPT-4.
-> We report the development of GPT-4, a large-scale, multimodal mode. OpenAI, GPT-4 Technical Report [3]
-
-I found a substantial increase in the quality of responses compared to the original GPT-3 model, especially with rhyming words.
-## Composing Lyrics with the OG, GPT-3
-Here’s my attempt at composing a song with the original GPT-3 model. I am using the word “couplet,” which means two lines of rhyming lyrics.
-> RobG: Write lyrics for the first verse of a rock song about dogs and cats that end with rhyming words for each couplet.
-> GPT-3: Dogs and cats living together Mingling in perfect harmony Running around and playing Until it’s time for bed
-> Curled up side by side In a furry little ball The pets we love the best Are the ones who make our house a home
-
-
-# References
-[1] T. Brown et al.,  Language Models are Few-Shot Learners  (2020) NeurIPS 2020
-
-[2] J. Schulman et al.,  Introducing ChatGPT  (2022)
-
-[3] OpenAI,  GPT-4 Technical Report  (2023)
-
-[4] A,  Radford et al., Robust Speech Recognition via Large-Scale Weak Supervision  (2022)`;
 export class OutputFormatter {
   static async formatOutput(
     blogContent: BlogContent,
@@ -75,11 +18,9 @@ export class OutputFormatter {
     // Generate markdown format
     const markdown = OutputFormatter.generateMarkdown(blogContent, seoMetadata);
 
-    // Generate MDX format
-    // const mdx = OutputFormatter.generateMDX(blogContent, seoMetadata);
-
-    // // Generate HTML format
-    // const html = OutputFormatter.generateHTML(blogContent, seoMetadata);
+    // Generate MDX and HTML formats
+    const mdx = OutputFormatter.generateMDX(blogContent, seoMetadata);
+    const html = OutputFormatter.generateHTML(blogContent, seoMetadata);
 
     // Generate section-level copyable content
     const sectionsCopyable =
@@ -103,8 +44,8 @@ export class OutputFormatter {
 
     return {
       markdown,
-      mdx: "",
-      html: "",
+      mdx,
+      html,
       sectionsCopyable,
       bonusOutputs,
       metadata: seoMetadata,
@@ -114,36 +55,25 @@ export class OutputFormatter {
   /**
    * Generates Markdown format
    */
-  private static async generateMarkdown(
+  private static generateMarkdown(
     blogContent: BlogContent,
     seoMetadata: SEOMetadata,
-  ): Promise<string> {
-    const { text } = await generateText({
-      model: getCurrentModel(CURRENT_PROVIDER),
-      system: FOMATTING_SYSTEM_PROMPT,
-      prompt: ` convert this blog into copy pastable markdown text ${JSON.stringify(blogContent)}. for nextjs application generate seo friendly metadata export also ${JSON.stringify(seoMetadata)} `,
-    });
-
-    return text;
-
+  ): string {
     let markdown = "";
 
-    // Add metadata as front matter
     markdown += "---\n";
-    markdown += `title: "${seoMetadata.articleSchema.headline}" \n`;
-    markdown += `description: "${seoMetadata.metaDescription}" \n`;
-    markdown += `date: "${seoMetadata.articleSchema.datePublished}" \n`;
-    markdown += `wordCount: ${seoMetadata.articleSchema.wordCount} \n`;
+    markdown += `title: "${seoMetadata.articleSchema.headline}"\n`;
+    markdown += `description: "${seoMetadata.metaDescription}"\n`;
+    markdown += `date: "${seoMetadata.articleSchema.datePublished}"\n`;
+    markdown += `wordCount: ${seoMetadata.articleSchema.wordCount}\n`;
     markdown += "---\n\n";
 
-    // Add content sections
     for (const section of blogContent.sections) {
       const heading = "#".repeat(section.level);
       markdown += `${heading} ${section.title}\n\n`;
       markdown += `${section.content}\n\n`;
     }
 
-    // Add internal links section
     if (seoMetadata.internalLinks.length > 0) {
       markdown += "## Related Articles\n\n";
       for (const link of seoMetadata.internalLinks) {
@@ -152,7 +82,6 @@ export class OutputFormatter {
       markdown += "\n";
     }
 
-    // Add FAQ section
     if (seoMetadata.faqSchema.length > 0) {
       markdown += "## FAQ\n\n";
       for (const faq of seoMetadata.faqSchema) {
@@ -364,7 +293,7 @@ export class OutputFormatter {
 
     // Get content summary for bonus outputs
     const contentSummary = blogContent.sections
-      .slice(0, 3)
+      ?.slice(0, 3)
       .map((s) => s.content.substring(0, 200))
       .join(" ");
 
@@ -497,7 +426,7 @@ export async function formatOutput(
       phaseDuration,
       tokensUsed,
       "success",
-      `Output formatted. Markdown: ${output.markdown.length} chars. MDX: ${output.mdx.length} chars. HTML: ${output.html.length} chars. Bonus outputs: 3 (tweet, newsletter, LinkedIn)`,
+      `Output formatted. Markdown: ${output.markdown.length} chars. MDX: ${output.mdx?.length ?? 0} chars. HTML: ${output.html?.length ?? 0} chars. Bonus outputs: 3 (tweet, newsletter, LinkedIn)`,
     );
 
     // this.totalTokensUsed += tokensUsed;

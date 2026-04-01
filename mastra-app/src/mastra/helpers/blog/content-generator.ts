@@ -13,6 +13,12 @@ import {
 import type { ResearchData, UserInput } from "../../types/blog";
 import { QualityChecker } from "./quality-checker";
 import pino from "pino";
+import {
+  BLOG_FEW_SHOT_EXAMPLES,
+  BLOG_WRITING_STYLE_GUIDE,
+  BLOG_ANTI_SIMILARITY_GUIDE,
+  BLOG_PROHIBITED_PHRASES,
+} from "../../prompts/blog";
 
 const logger = pino({
   transport: {
@@ -191,7 +197,7 @@ delay = calculate_retry_delay(attempt=3)  # ~8.0-8.8 seconds
         const { text: generatedText, usage: generatedUsage } =
           await generateText({
             model: google(CURRENT_MODEL),
-            combined_prompt,
+            prompt: combined_prompt,
             temperature: 0.7,
           });
         text = generatedText;
@@ -236,7 +242,7 @@ delay = calculate_retry_delay(attempt=3)  # ~8.0-8.8 seconds
       usage: { totalTokens: conclusionTokens },
     } = await generateText({
       model: google(CURRENT_MODEL),
-      prompt: this.buildConclusionPrompt(outline, validatedInput),
+      prompt: this.buildConclusionPrompt(outline, validatedInput, researchData),
       temperature: 0.7,
     });
 
@@ -280,6 +286,16 @@ Current content: ${section.content.substring(0, 500)}...
 Issues to fix:
 ${qualityCheckResult.regenerationReason}
 
+${BLOG_ANTI_SIMILARITY_GUIDE}
+
+Regenerate the section by changing the framing, not just the wording.
+Prefer one of these pivots if the content feels too similar:
+- a narrower failure mode
+- a debugging path
+- a trade-off or limitation
+- a concrete implementation nuance
+- a contrarian but accurate takeaway
+
 Regenerate the section addressing these issues.`;
 
     let text = "";
@@ -322,12 +338,25 @@ Regenerate the section addressing these issues.`;
     validatedInput: ValidatedInput,
     researchData: ResearchData,
   ): string {
+    const uniquenessBrief = this.buildUniquenessBrief(researchData);
+
     return `Write an engaging introduction for a blog post about "${validatedInput.topic}".
 
 Title: ${outline.h1}
 
 Target Audience: ${validatedInput.audience}
 Tone: ${validatedInput.tone}
+
+${BLOG_WRITING_STYLE_GUIDE}
+
+${BLOG_FEW_SHOT_EXAMPLES}
+
+${uniquenessBrief}
+
+${BLOG_ANTI_SIMILARITY_GUIDE}
+
+Avoid these phrases in the final article:
+${BLOG_PROHIBITED_PHRASES.map((phrase) => `- ${phrase}`).join("\n")}
 
 STYLE RULES:
 - Use simple, clear language
@@ -356,6 +385,7 @@ Write the introduction now:`;
     validatedInput: ValidatedInput,
     researchData: ResearchData,
   ): string {
+    const uniquenessBrief = this.buildUniquenessBrief(researchData);
     const isSpecialSection =
       section.title.toLowerCase().includes("how it works") ||
       section.title.toLowerCase().includes("common mistake") ||
@@ -384,6 +414,17 @@ Section Description: ${section.description}
 
 Target Audience: ${validatedInput.audience}
 Tone: ${validatedInput.tone}
+
+${BLOG_WRITING_STYLE_GUIDE}
+
+${BLOG_FEW_SHOT_EXAMPLES}
+
+${uniquenessBrief}
+
+${BLOG_ANTI_SIMILARITY_GUIDE}
+
+Avoid these phrases in the final article:
+${BLOG_PROHIBITED_PHRASES.map((phrase) => `- ${phrase}`).join("\n")}
 
 STYLE RULES:
 - Use simple, clear language
@@ -415,6 +456,7 @@ Write the section now:`;
     validatedInput: ValidatedInput,
     researchData: ResearchData,
   ): string {
+    const uniquenessBrief = this.buildUniquenessBrief(researchData);
     return `Write a subsection for a blog post about "${validatedInput.topic}".
 
 Subsection Title: ${section.title}
@@ -422,6 +464,17 @@ Subsection Description: ${section.description}
 
 Target Audience: ${validatedInput.audience}
 Tone: ${validatedInput.tone}
+
+${BLOG_WRITING_STYLE_GUIDE}
+
+${BLOG_FEW_SHOT_EXAMPLES}
+
+${uniquenessBrief}
+
+${BLOG_ANTI_SIMILARITY_GUIDE}
+
+Avoid these phrases in the final article:
+${BLOG_PROHIBITED_PHRASES.map((phrase) => `- ${phrase}`).join("\n")}
 
 STYLE RULES:
 - Use simple, clear language
@@ -449,11 +502,14 @@ Write the subsection now:`;
   private buildConclusionPrompt(
     outline: BlogOutline,
     validatedInput: ValidatedInput,
+    researchData: ResearchData,
   ): string {
+    const uniquenessBrief = this.buildUniquenessBrief(researchData);
+
     const keyPoints = outline.sections
       .filter((s) => s.level === 2)
       .map((s) => s.title)
-      .slice(0, 3);
+      ?.slice(0, 3);
 
     return `Write a conclusion for a blog post about "${validatedInput.topic}".
 
@@ -462,6 +518,17 @@ ${keyPoints.map((p) => `- ${p}`).join("\n")}
 
 Target Audience: ${validatedInput.audience}
 Tone: ${validatedInput.tone}
+
+${BLOG_WRITING_STYLE_GUIDE}
+
+${BLOG_FEW_SHOT_EXAMPLES}
+
+${uniquenessBrief}
+
+${BLOG_ANTI_SIMILARITY_GUIDE}
+
+Avoid these phrases in the final article:
+${BLOG_PROHIBITED_PHRASES.map((phrase) => `- ${phrase}`).join("\n")}
 
 STYLE RULES:
 - Use simple, clear language
@@ -515,10 +582,79 @@ Write the conclusion now:`;
       result = result.replace(buzzword, "");
     }
 
+    // Remove banned phrases that sound too formal or foreign
+    for (const phrase of BLOG_PROHIBITED_PHRASES) {
+      const escaped = phrase.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const pattern = new RegExp(`\\b${escaped}\\b`, "gi");
+      result = result.replace(pattern, "");
+    }
+
+    // Prefer simple language replacements
+    result = result.replace(/\butilize\b/gi, "use");
+    result = result.replace(/\bapproximately\b/gi, "about");
+    result = result.replace(/\btherefore\b/gi, "so");
+    result = result.replace(/\bhowever\b/gi, "but");
+    result = result.replace(/\bmoreover\b/gi, "also");
+
     // Clean up extra spaces created by buzzword removal
     result = result.replace(/\s+/g, " ").trim();
 
     return result;
+  }
+
+  /**
+   * Builds a compact brief that pushes the model toward a less generic angle.
+   */
+  private buildUniquenessBrief(researchData: ResearchData): string {
+    const topPages = researchData?.serpAnalysis?.topPages ?? [];
+    const repeatedThemes = researchData?.gapAnalysis?.whatIsRepeated ?? [];
+    const missingAngles = researchData?.gapAnalysis?.whatIsMissing ?? [];
+    const sharpQuestions = researchData?.questionMining?.whyDoesThisBreak ?? [];
+
+    const competitorAngles = topPages
+      ?.slice(0, 3)
+      .map((page) => page.angle)
+      .join(", ");
+
+    return `
+## Uniqueness Brief
+
+Do not mirror the competitor structure too closely.
+
+Competitor angles: ${competitorAngles || "unknown"}
+
+Common themes to avoid:
+${
+  repeatedThemes?.slice(0, 3).length > 0
+    ? repeatedThemes
+        ?.slice(0, 3)
+        .map((item) => `- ${item}`)
+        .join("\n")
+    : "- none provided"
+}
+
+Angles to emphasize instead:
+${
+  missingAngles?.slice(0, 3).length > 0
+    ? missingAngles
+        ?.slice(0, 3)
+        .map((item) => `- ${item}`)
+        .join("\n")
+    : "- a sharper, more practical angle than the competitors"
+}
+
+Questions to answer with specificity:
+${
+  sharpQuestions?.slice(0, 2).length > 0
+    ? sharpQuestions
+        ?.slice(0, 2)
+        .map((item) => `- ${item}`)
+        .join("\n")
+    : "- why this fails in real projects and what people usually miss"
+}
+
+Requirement: give the article a distinct framing, one concrete example, and one opinionated takeaway that is not just a rewording of common SERP content.
+`;
   }
 
   /**

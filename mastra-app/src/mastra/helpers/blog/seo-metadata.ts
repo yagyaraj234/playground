@@ -146,7 +146,7 @@ class SEOLayer {
     // Get section titles and key content
     const sectionTitles = outline.sections.map((s) => s.title).join(", ");
     const contentPreview = blogContent.sections
-      .slice(0, 3)
+      ?.slice(0, 3)
       .map((s) => s.content.substring(0, 200))
       .join("\n");
 
@@ -203,14 +203,14 @@ class SEOLayer {
 
     // Combine all questions
     const allQuestions = [
-      ...questionMining.beginnerQuestions.slice(0, 2),
-      ...questionMining.whyDoesThisBreak.slice(0, 2),
-      ...questionMining.whenNotToUse.slice(0, 1),
+      ...questionMining.beginnerQuestions?.slice(0, 2),
+      ...questionMining.whyDoesThisBreak?.slice(0, 2),
+      ...questionMining.whenNotToUse?.slice(0, 1),
     ];
 
     // Get relevant content for answers
     const contentSummary = blogContent.sections
-      .slice(0, 5)
+      ?.slice(0, 5)
       .map((s) => `${s.title}: ${s.content.substring(0, 150)}`)
       .join("\n\n");
 

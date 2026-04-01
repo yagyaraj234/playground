@@ -68,7 +68,7 @@ export class QualityChecker {
 
   /**
    * Checks similarity against SERP results
-   * Flags if >70% similar to any competitor page
+   * Flags if >50% similar to any competitor page
    */
   private async checkSimilarity(
     section: GeneratedSection,
@@ -77,7 +77,7 @@ export class QualityChecker {
     const model = await getCurrentModel(CURRENT_PROVIDER);
 
     // Prepare competitor content summaries
-    const competitorSummaries = researchData.serpAnalysis.topPages
+    const competitorSummaries = (researchData.serpAnalysis.topPages ?? [])
       .map(
         (page) =>
           `URL: ${page.url}
@@ -95,7 +95,7 @@ Key Points: ${page.keyPoints.join(", ")}`,
           .describe("Similarity score as percentage (0-100)"),
         isSimilar: z
           .boolean()
-          .describe("Whether content is > 80% similar to competitors"),
+          .describe("Whether content is > 50% similar to competitors"),
         explanation: z.string().describe("Explanation of similarity findings"),
       }),
     });
@@ -114,7 +114,7 @@ ${competitorSummaries}
 
 Determine:
 1. Similarity score (0-100) - how much of this content is similar to competitors
-2. Whether it's >80% similar (flag for regeneration)
+2. Whether it's >50% similar (flag for regeneration)
 3. Explanation of findings
 
 Consider:
@@ -126,7 +126,7 @@ Consider:
 Be strict: if the content covers the same ground as competitors, mark it as similar.`,
     });
 
-    const passed = !result?.isSimilar;
+    const passed = (result?.similarityScore ?? 100) <= 50 && !result?.isSimilar;
     const details = `Similarity: ${result?.similarityScore}%. ${result?.explanation}`;
 
     return {
@@ -189,9 +189,9 @@ Flag as problematic if:
 
     const passed = !result?.hasRepetition;
     const repeatedPhrasesStr =
-      result?.repeatedPhrases.length > 0
+      result?.repeatedPhrases?.length > 0
         ? result?.repeatedPhrases
-            .map((p) => `"${p.phrase}" (${p.count}x)`)
+            .map((p: { phrase: string; count: number }) => `"${p.phrase}" (${p.count}x)`)
             .join(", ")
         : "None";
 
@@ -235,12 +235,14 @@ Flag as problematic if:
       }),
     });
 
+    const audience = UserInput.audience ?? "beginner";
+    const audienceLabel = audienceDescriptions[audience] ?? audienceDescriptions.beginner;
     const result = await generateObjectResult({
       model,
       schema,
       prompt: `Assess the clarity of this blog section for the target audience.
 
-Target Audience: ${UserInput.audience} (${audienceDescriptions[UserInput.audience]})
+Target Audience: ${audience} (${audienceLabel})
 
 Section Title: ${section.title}
 Section Content:

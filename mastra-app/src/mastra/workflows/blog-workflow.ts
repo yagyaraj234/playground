@@ -121,9 +121,7 @@ const formatResult = createStep({
 const blogWorkflow = createWorkflow({
   id: "blog-workflow",
   inputSchema: userInputSchema,
-  outputSchema: z.object({
-    blog: z.string(),
-  }),
+  outputSchema: BlogOutput,
 })
   .then(researchStep)
   .then(outlineStep)

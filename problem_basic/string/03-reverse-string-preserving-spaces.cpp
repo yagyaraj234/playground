@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
+#include <utility>
 
 using namespace std;
 
@@ -22,6 +23,28 @@ void reverse(string &str){
     }
 }
 
+void reverseKeepSpacesPosition(string &str){
+
+    int left =0;
+    int right =str.length()-1;
+
+
+    while(left<right){
+        if(str[left] ==' '){
+            left++;
+        }
+        else if (str[right]==' ')     {
+        right--;
+        }
+        else{
+            swap(str[left],str[right]);
+            right--;
+            left++;
+        }
+    }
+
+}
+
 
 int main() {
     // TODO: Implement solution.
@@ -30,6 +53,14 @@ int main() {
      // reverse(str.begin(), str.end());
      reverse(str);
      cout<<"result : "<<str<<endl;
+
+
+     cout<<"Swap without replacing position of spaces"<<endl;
+
+     string strInput="AV FDSFD SSD ADDSA RES";
+     cout<<"Input: "<<strInput<<endl;
+     reverseKeepSpacesPosition(strInput);
+     cout<<"Output: "<<strInput<<endl;
 
     return 0;
 }

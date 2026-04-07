@@ -49,13 +49,54 @@ Result findLargestSmallest(vector<int> v){
     return {largest,smallest};
 
 }
+
+//  find second largest and second smallest element
+Result findSecondLargestAndSmallest(vector<int> v){
+
+    if(v.empty()) return {0,0};
+
+    int largest = INT_MIN;
+    int smallest= INT_MAX;
+    int secondLargest =INT_MIN;
+    int secondSmallest = INT_MAX;
+// 6 2 2 2 8 1 10 9 7 7
+    for(int i=0;i<v.size();i++){
+        int item=v[i];
+        if(item > largest ){
+            secondLargest= largest;
+            largest = item;
+        }else if(item>secondLargest && item != largest){
+            secondLargest = item;
+        }
+        if(item<smallest){
+            secondSmallest= smallest;
+            smallest = item;
+        }else if(item<secondSmallest && item != smallest){
+            secondSmallest= item;
+        }
+    }
+
+    return {secondLargest,secondSmallest};
+
+
+}
+
 int main() {
 
-    vector<int> input = generateRandomNumbers(932);
+    vector<int> input = generateRandomNumbers(10);
+
+    for(int i=0;i<input.size();i++){
+        cout<<input[i]<<" ";
+    }
+    cout<<endl;
 
     Result output = findLargestSmallest(input);
 
     cout<<"Largest: "<<output.largest<<endl<<"Smallest: "<<output.smallest<<endl;
+
+    Result output2 = findSecondLargestAndSmallest(input);
+
+    cout<<"Second Largest: "<<output2.largest<<endl<<"Second Smallest: "<<output2.smallest<<endl;
 
 
     return 0;

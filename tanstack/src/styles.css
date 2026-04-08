@@ -1,4 +1,14 @@
+@import url("https://rsms.me/inter/inter.css");
 @import "tailwindcss" source("../");
+
+@theme {
+  --font-inter: "Inter Variable", sans-serif;
+  /* Optional: Set default feature settings for Inter */
+  --font-inter--font-feature-settings: "liga" 1, "calt" 1, "cv11" 1;
+
+  /* Optional: Set default variation settings (like optical size) */
+  --font-inter--font-variation-settings: "opsz" 32;
+}
 
 @layer base {
   *,
@@ -18,11 +28,21 @@ html {
 }
 
 body {
-  @apply bg-gray-50 text-gray-950 dark:bg-gray-900 dark:text-gray-200;
+  @apply bg-gray-50 text-gray-950 dark:bg-zinc-950 dark:text-gray-200;
 }
 
 html body {
-  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+}
+
+/* prevent pull-to-refresh in a PWA */
+html {
+  overscroll-behavior-y: none; /* only vertical */
+}
+
+/* prevent horizontal swipe navigation */
+html {
+  overscroll-behavior-x: none; /* only horizontal */
 }
 
 .geist-400 {

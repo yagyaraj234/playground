@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <unordered_map>
 #include <vector>
@@ -39,6 +40,9 @@ int main() {
     vector<int> v={3,4,2,5,256,3,6,2,654,5,7,3,4};
     vector<int> v2={3,4,1,6,7,2,5,7,2,4,66,3};
 
+
+    sort(v.begin(),v.end());
+    sort(v2.begin(),v2.end());
     vector<int> result = findIntersection(v, v2);
 
 

@@ -1,0 +1,10 @@
+[
+  {
+    "label": "Run C++ Program",
+    "command": "zsh",
+    "args": [
+      "-c",
+      "clang++ \"${file}\" -std=c++17 -O2 -Wall -o \"${fileBase}\" && \"./${fileBase}\"",
+    ],
+  },
+]

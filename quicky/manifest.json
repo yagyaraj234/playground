@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Quicky",
+  "description": "Insert saved links from any text field by typing s. and choosing from a command dropdown.",
+  "version": "1.0.0",
+  "permissions": ["storage", "sidePanel"],
+  "action": {
+    "default_title": "Open Quicky"
+  },
+  "background": {
+    "service_worker": "src/background.js"
+  },
+  "side_panel": {
+    "default_path": "src/sidebar.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["src/content.js"],
+      "css": ["src/content.css"],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ]
+}

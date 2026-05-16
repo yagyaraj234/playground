@@ -36,7 +36,7 @@ function handleSubmit(event) {
   const nextLink = {
     id: editingId || crypto.randomUUID(),
     title: titleInput.value.trim(),
-    url: normalizeUrl(urlInput.value.trim()),
+    url: urlInput.value.trim(),
     keyword: keywordInput.value.trim().toLowerCase()
   };
 
@@ -91,11 +91,6 @@ function render() {
 
 function persist() {
   chrome.storage.sync.set({ links });
-}
-
-function normalizeUrl(value) {
-  if (/^https?:\/\//i.test(value)) return value;
-  return `https://${value}`;
 }
 
 function getHost(value) {

@@ -133,15 +133,16 @@ function scoreLink(link, query) {
   const title = normalize(link.title);
   const keyword = normalize(link.keyword);
   const host = normalize(getHost(link.url));
-  const haystack = `${title} ${keyword} ${host}`;
+  const urlValue = normalize(link.url);
+  const haystack = `${title} ${keyword} ${host} ${urlValue}`;
 
   if (keyword === query) return 100;
   if (keyword.startsWith(query)) return 92;
   if (title.startsWith(query)) return 86;
-  if (host.startsWith(query)) return 78;
+  if (host.startsWith(query) || urlValue.startsWith(query)) return 78;
   if (haystack.includes(query)) return 70;
   if (isSubsequence(query, haystack)) return 52;
-  if (closeToPrefix(query, title) || closeToPrefix(query, keyword) || closeToPrefix(query, host)) return 44;
+  if (closeToPrefix(query, title) || closeToPrefix(query, keyword) || closeToPrefix(query, host) || closeToPrefix(query, urlValue)) return 44;
 
   return -1;
 }

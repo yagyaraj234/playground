@@ -1,5 +1,6 @@
 import React from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import Button from "../../../components/button";
 
 export const Route = createFileRoute("/practice/timer-hook/")({
   component: RouteComponent,
@@ -52,8 +53,8 @@ function RouteComponent() {
         <h1>{seconds} Seconds left</h1>
 
         <div className="flex gap-4 items-center">
-          <button onClick={start}>start</button>
-          <button onClick={stop}>stop</button>
+          <Button onClick={start}>start</Button>
+          <Button onClick={stop}>stop</Button>
         </div>
       </div>
     </main>

@@ -1,0 +1,16 @@
+body {
+  font-family: sans-serif;
+}
+
+.progress {
+  background-color: grey;
+  width: 400px;
+  height: 12px;
+  margin-top: 20px;
+  min-height: 12px;
+  min-width: 400px;
+}
+.progress .fill {
+  height: 12px;
+  background-color: green;
+}

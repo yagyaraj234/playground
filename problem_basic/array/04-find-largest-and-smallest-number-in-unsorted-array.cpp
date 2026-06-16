@@ -1,0 +1,103 @@
+#include <climits>
+#include <iostream>
+#include <vector>
+#include <random>
+using namespace std;
+
+// Problem: How to find largest and smallest number in unsorted array?
+std::vector<int> generateRandomNumbers(int count) {
+    std::vector<int> result;
+    result.reserve(count); // Optional: Pre-allocate memory for efficiency
+
+    // Setup random number generation (Modern C++ style)
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(1, count); // Range [1, count]
+
+    for (int i = 0; i < count; ++i) {
+        result.push_back(dis(gen));
+    }
+
+    return result; // Efficiently moved, not copied
+}
+
+
+
+struct Result {
+    int largest;
+    int smallest;
+};
+
+Result findLargestSmallest(vector<int> v){
+
+    if (v.empty()) return {0, 0}; // Handle empty case
+
+        int largest = v[0];
+        int smallest = v[0];
+
+    for(int i=0;i<v.size();i++){
+
+        int item = v[i];
+        if(item > largest){
+            largest=item;
+        }
+        if(item < smallest){
+            smallest=item;
+        }
+    }
+
+    return {largest,smallest};
+
+}
+
+//  find second largest and second smallest element
+Result findSecondLargestAndSmallest(vector<int> v){
+
+    if(v.empty()) return {0,0};
+
+    int largest = INT_MIN;
+    int smallest= INT_MAX;
+    int secondLargest =INT_MIN;
+    int secondSmallest = INT_MAX;
+// 6 2 2 2 8 1 10 9 7 7
+    for(int i=0;i<v.size();i++){
+        int item=v[i];
+        if(item > largest ){
+            secondLargest= largest;
+            largest = item;
+        }else if(item>secondLargest && item != largest){
+            secondLargest = item;
+        }
+        if(item<smallest){
+            secondSmallest= smallest;
+            smallest = item;
+        }else if(item<secondSmallest && item != smallest){
+            secondSmallest= item;
+        }
+    }
+
+    return {secondLargest,secondSmallest};
+
+
+}
+
+int main() {
+
+    vector<int> input = generateRandomNumbers(10);
+
+    for(int i=0;i<input.size();i++){
+        cout<<input[i]<<" ";
+    }
+    cout<<endl;
+
+    Result output = findLargestSmallest(input);
+
+    cout<<"Largest: "<<output.largest<<endl<<"Smallest: "<<output.smallest<<endl;
+
+    Result output2 = findSecondLargestAndSmallest(input);
+
+    cout<<"Second Largest: "<<output2.largest<<endl<<"Second Smallest: "<<output2.smallest<<endl;
+
+
+    return 0;
+}

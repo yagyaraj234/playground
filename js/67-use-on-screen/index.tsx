@@ -45,4 +45,6 @@ export const useOnScreen2 = (ref: React.Ref) => {
       window.removeEventListener("resize", observer);
     };
   }, []);
+
+  return isIntersecting;
 };
